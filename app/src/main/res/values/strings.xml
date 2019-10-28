@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">VoiceTest</string>
+    <string name="enter_message">Enter a message</string>
+    <string name="speak_button">Speak</string>
+</resources>
