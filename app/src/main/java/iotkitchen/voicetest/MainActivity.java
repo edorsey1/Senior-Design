@@ -22,7 +22,6 @@ public class MainActivity extends AppCompatActivity {
     Button next;
     Button repeat;
     Button ingredients;
-    int ingredientCount;
     int instructionCount;
 
     @Override
@@ -32,14 +31,13 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        ingredientCount = 0;
         instructionCount = 0;
 
         /* Recipe Creation for Test Recipe */
         String title = "Peanut Butter Cups";
         String detail = "Makes six servings";
         String[] ingredient = new String[3];
-        String[] instruction = new String[7];
+        final String[] instruction = new String[7];
         ingredient[0] = "3 tablespoons powdered sugar, sifted";
         ingredient[1] = "1 half cup creamy peanut butter";
         ingredient[2] = "1 cup chocolate, melted";
@@ -55,9 +53,9 @@ public class MainActivity extends AppCompatActivity {
 
         /* Text to speech */
         start = (Button)findViewById(R.id.startButton);
+        ingredients = (Button)findViewById(R.id.ingredientButton);
         next = (Button)findViewById(R.id.nextButton);
         repeat = (Button)findViewById(R.id.repeatButton);
-        ingredients = (Button)findViewById(R.id.ingredientButton);
 
         t1=new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
             @Override
@@ -71,9 +69,58 @@ public class MainActivity extends AppCompatActivity {
         start.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String toSpeak = REESES.getTitle();
-                Toast.makeText(getApplicationContext(), toSpeak,Toast.LENGTH_SHORT).show();
+                String toSpeak1 = REESES.getTitle();
+                String toSpeak2 = REESES.getDetail();
+                t1.speak(toSpeak1, TextToSpeech.QUEUE_ADD, null);
+                t1.speak(toSpeak2, TextToSpeech.QUEUE_ADD, null);
+            }
+        });
+
+        ingredients.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                for (int i = 0; i < 3; i++)
+                {
+                    String toSpeak = REESES.getIngredient(i);
+                    t1.speak(toSpeak, TextToSpeech.QUEUE_ADD, null);
+                }
+            }
+        });
+
+        next.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String toSpeak;
+                if (instructionCount < 7)
+                {
+                    toSpeak = REESES.getInstruction(instructionCount);
+                }
+                else
+                {
+                    toSpeak = "You are done.";
+                }
+
                 t1.speak(toSpeak, TextToSpeech.QUEUE_FLUSH, null);
+                Toast.makeText(getApplicationContext(), toSpeak, Toast.LENGTH_SHORT).show();
+                instructionCount++;
+            }
+        });
+
+        repeat.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String toSpeak;
+                if (instructionCount <= 7)
+                {
+                    toSpeak = REESES.getInstruction(instructionCount-1);
+                }
+                else
+                {
+                    toSpeak = "You are done.";
+                }
+
+                t1.speak(toSpeak, TextToSpeech.QUEUE_FLUSH, null);
+                Toast.makeText(getApplicationContext(), toSpeak, Toast.LENGTH_LONG).show();
             }
         });
 
