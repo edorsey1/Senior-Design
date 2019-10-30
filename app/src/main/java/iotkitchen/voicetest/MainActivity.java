@@ -51,6 +51,8 @@ public class MainActivity extends AppCompatActivity {
         instruction[5] = "Refrigerate for 1 hour or until chocolate has hardened.";
         instruction[6] = "Remove peanut butter cups from the liners and enjoy!";
 
+        final Recipe REESES = new Recipe(title, detail, ingredient, instruction);
+
         /* Text to speech */
         start = (Button)findViewById(R.id.startButton);
         next = (Button)findViewById(R.id.nextButton);
@@ -61,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onInit(int status) {
                 if(status != TextToSpeech.ERROR) {
-                    t1.setLanguage(Locale.UK);
+                    t1.setLanguage(Locale.US);
                 }
             }
         });
@@ -69,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
         start.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String toSpeak = "Testing, testing, testing";
+                String toSpeak = REESES.getTitle();
                 Toast.makeText(getApplicationContext(), toSpeak,Toast.LENGTH_SHORT).show();
                 t1.speak(toSpeak, TextToSpeech.QUEUE_FLUSH, null);
             }

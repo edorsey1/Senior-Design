@@ -3,10 +3,10 @@ package iotkitchen.voicetest;
 public class Recipe {
 
     /* Elements of a recipe */
-    String title;
-    String detail;
-    String ingredient[];
-    String instruction[];
+    public String title;
+    public String detail;
+    public String ingredient[];
+    public String instruction[];
 
     public Recipe(String title, String detail, String ingredient[], String instruction[])
     {
