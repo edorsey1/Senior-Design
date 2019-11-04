@@ -27,13 +27,15 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-        /* Default create */
+        // Default create
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //
+
         instructionCount = 0;
 
-        /* Recipe Creation for Test Recipe */
+        // Recipe Creation for Test Recipe
         String title = "Peanut Butter Cups";
         String detail = "Makes six servings";
         String[] ingredient = new String[3];
@@ -51,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
 
         final Recipe REESES = new Recipe(title, detail, ingredient, instruction);
 
-        /* Text to speech */
+        // Text to speech
         start = (Button)findViewById(R.id.startButton);
         ingredients = (Button)findViewById(R.id.ingredientButton);
         next = (Button)findViewById(R.id.nextButton);

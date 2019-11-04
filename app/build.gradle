@@ -25,4 +25,7 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+
+    // Dialogflow dependecies
+    implementation 'com.google.cloud:google-cloud-dialogflow:0.117.0-alpha'
 }
