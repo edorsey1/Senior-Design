@@ -1,18 +1,30 @@
 package iotkitchen.voicetest;
 
-/* Default imports */
+// Default imports
+import android.media.MediaCas;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
-/* Imports for text to speech */
+// Imports for text to speech
 import android.speech.tts.TextToSpeech;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
 import java.util.Locale;
 
-/* Import for recipe class */
+// Imports for Dialogflow
+import java.io.InputStream;
+import com.google.api.gax.core.FixedCredentialsProvider;
+import com.google.auth.oauth2.GoogleCredentials;
+import com.google.auth.oauth2.ServiceAccountCredentials;
+import com.google.cloud.dialogflow.v2.QueryInput;
+import com.google.cloud.dialogflow.v2.SessionsSettings;
+import com.google.cloud.dialogflow.v2.SessionsClient;
+import com.google.cloud.dialogflow.v2.SessionName;
+import java.util.UUID;
+import android.app.Activity;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -24,14 +36,40 @@ public class MainActivity extends AppCompatActivity {
     Button ingredients;
     int instructionCount;
 
+    //Dialogflow initilization
+    private void initDialogflow() {
+        try
+        {
+            InputStream stream = getResources().openRawResource(R.raw.agent_credentials);
+            GoogleCredentials credentials = GoogleCredentials.fromStream(stream);
+            String projectId = ((ServiceAccountCredentials)credentials).getProjectId();
+
+            SessionsSettings.Builder settingsBuilder = SessionsSettings.newBuilder();
+            SessionsSettings sessionsSettings = settingsBuilder.setCredentialsProvider(FixedCredentialsProvider.create(credentials)).build();
+            SessionsClient sessionsClient = SessionsClient.create(sessionsSettings);
+            String uuid = UUID.randomUUID().toString();
+            SessionName session = SessionName.of(projectId, uuid);
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    protected void RequestJavaV2Task(Activity activity, SessionName session, SessionsClient sessionsClient, QueryInput queryInput)
+    {
+        this.activity = activity;
+        this.session = session;
+        this.sessionsClient = sessionsClient;
+        this.queryInput = queryInput;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         // Default create
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        //
 
         instructionCount = 0;
 
