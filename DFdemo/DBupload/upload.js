@@ -203,6 +203,7 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, resp
           }
           else {
             agent.add(doc.data().instruction[num-1]);
+            count = num;
           }
         }
         return Promise.resolve('Read complete');
