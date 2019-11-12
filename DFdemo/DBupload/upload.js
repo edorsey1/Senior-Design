@@ -150,6 +150,128 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, resp
   }
 
   // Intent to jump to a specific instruction
+  function jump1 (agent) {
+    const stepNum = agent.parameters.stepNum;
+    var num = 0;
+    const dialogflowAgentDoc = db.collection('recipes').doc('demoRecipe');
+    return dialogflowAgentDoc.get()
+      .then(doc => {
+        if (!doc.exists) {
+          agent.add('This recipe does not exist');
+        }
+        else {
+          var length = doc.data().instruction.length;
+
+          switch (stepNum) {
+            case 'first':
+              num = 1;
+              break;
+            case 'second':
+              num = 2;
+              break;
+            case 'third':
+              num = 3;
+              break;
+            case 'fourth':
+              num = 4;
+              break;
+            case 'fifth':
+              num = 5;
+              break;
+            case 'sixth':
+              num = 6;
+              break;
+            case 'seventh':
+              num = 7;
+              break;
+            case 'eighth':
+              num = 8;
+              break;
+            case 'ninth':
+              num = 9;
+              break;
+            case 'tenth':
+              num = 10;
+              break;
+            case 'last':
+              num = length - 1;
+              break;
+          }
+
+          if ((num > length) || (num == 0)) {
+            agent.add('The recipe only has ' + length + ' instructions.');
+          }
+          else {
+            agent.add(doc.data().instruction[num-1]);
+          }
+        }
+        return Promise.resolve('Read complete');
+      }).catch(() => {
+        agent.add('No data for recipe found');
+      });
+  }
+
+  // Intent to jump to a specific ingredient
+  function jump2 (agent) {
+    const stepNum = agent.parameters.stepNum;
+    var num = 0;
+    const dialogflowAgentDoc = db.collection('recipes').doc('demoRecipe');
+    return dialogflowAgentDoc.get()
+      .then(doc => {
+        if (!doc.exists) {
+          agent.add('This recipe does not exist');
+        }
+        else {
+          var length = doc.data().ingredient.length;
+
+          switch (stepNum) {
+            case 'first':
+              num = 1;
+              break;
+            case 'second':
+              num = 2;
+              break;
+            case 'third':
+              num = 3;
+              break;
+            case 'fourth':
+              num = 4;
+              break;
+            case 'fifth':
+              num = 5;
+              break;
+            case 'sixth':
+              num = 6;
+              break;
+            case 'seventh':
+              num = 7;
+              break;
+            case 'eighth':
+              num = 8;
+              break;
+            case 'ninth':
+              num = 9;
+              break;
+            case 'tenth':
+              num = 10;
+              break;
+            case 'last':
+              num = length - 1;
+              break;
+          }
+
+          if ((num > length) || (num == 0)) {
+            agent.add('The recipe only has ' + length + ' ingredients.');
+          }
+          else {
+            agent.add(doc.data().ingredient[num-1]);
+          }
+        }
+        return Promise.resolve('Read complete');
+      }).catch(() => {
+        agent.add('No data for recipe found');
+      });
+  }
 
   // Map from Dialogflow intent names to functions to be run when the intent is matched
   let intentMap = new Map();
@@ -160,5 +282,7 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, resp
   intentMap.set('ingredientStart', ingredientRead);
   intentMap.set('instructionNext', next);
   intentMap.set('instructionRepeat', repeat);
+  intentMap.set('instructionJump', jump1);
+  intentMap.set('ingredientJump', jump2);
   agent.handleRequest(intentMap);
 });
