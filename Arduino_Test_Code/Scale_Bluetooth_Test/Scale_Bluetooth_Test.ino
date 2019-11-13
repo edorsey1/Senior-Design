@@ -1,6 +1,9 @@
 //Taken and modified from https://learn.sparkfun.com/tutorials/load-cell-amplifier-hx711-breakout-hookup-guide/all
 
 #include <HX711.h>
+#include <SoftwareSerial.h>
+
+SoftwareSerial Bluetooth(10, 9); // RX, TX
 
 #define DOUT  3
 #define CLK  2
@@ -14,20 +17,18 @@ float weight = 0;
 
 void setup() {
   Serial.begin(9600);
-  Serial.println("HX711 calibration sketch");
+  Bluetooth.begin(9600);       //Set up bluetooth serial communication
+  Serial.println("Weight test sketch");
   Serial.println("Remove all weight from scale");
-  Serial.println("After readings begin, place known weight on scale");
-  Serial.println("Press + or a to increase calibration factor");
-  Serial.println("Press - or z to decrease calibration factor");
+  Serial.println("Press q to print weight");
+  Serial.println("Press t to tare scale");
 
   scale.begin(DOUT, CLK);
   scale.set_scale(calibration_factor);
   scale.tare(); //Reset the scale to 0
 
-  long zero_factor = scale.read_average(); //Get a baseline reading
-  Serial.print("Zero factor: "); //This can be used to remove the need to tare the scale. Useful in permanent scale projects.
-  Serial.println(zero_factor);
   scale.tare();
+  Serial.println("Ready for weight");
 }
 
 void loop() {
@@ -51,16 +52,18 @@ void loop() {
     else if (temp == 'q')
     {
       weight = (int) round(scale.get_units(2));
-      Serial.print(weight,1);
+      Serial.print((int) weight, 1);
       Serial.println();
-      Bluetooth.print(weight,1);
+      Bluetooth.print((int) weight);
+      Bluetooth.print(" grams \r\n");
     }
     else if (temp == 'r')
     {
-      weight = scale.get_units(2)
-      Serial.print(weight));
+      weight = scale.get_units(2);
+      Serial.print(weight);
       Serial.println();
       Bluetooth.print(weight);
+      Bluetooth.print(" grams \r\n");
     }
     else if (temp == 't')
     {
