@@ -15,6 +15,18 @@
         android:layout_marginTop="101dp"
         android:text="" />
 
+    <TextView
+        android:id="@+id/bluet"
+        android:layout_width="411dp"
+        android:layout_height="100dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="1dp"
+        android:layout_marginLeft="1dp"
+        android:layout_marginTop="511dp"
+        android:text="This is the Bluetooth page" />
+
     <ImageView
         android:id="@+id/imageView1"
         android:layout_width="wrap_content"

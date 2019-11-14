@@ -45,7 +45,7 @@ public class blue_tooth extends AppCompatActivity {
     private static final UUID MY_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
 
     // MAC-address of Bluetooth module (you must edit this line)
-    private static String address = "98:D3:32:71:0A:17";
+    private static String address = "00:14:03:06:16:AD";
 
 
     @Override
@@ -56,7 +56,7 @@ public class blue_tooth extends AppCompatActivity {
   //      btnOn = (Button) findViewById(R.id.btnOn);					// button LED ON
     //    btnOff = (Button) findViewById(R.id.btnOff);				// button LED OFF
         txtArduino = (TextView) findViewById(R.id.txtArduino);		// for display the received data from the Arduino
-
+        TextView text = (TextView) findViewById(R.id.bluet);
         h = new Handler() {
             public void handleMessage(android.os.Message msg) {
                 switch (msg.what) {
@@ -145,7 +145,9 @@ public class blue_tooth extends AppCompatActivity {
         // Establish the connection.  This will block until it connects.
         Log.d(TAG, "...Connecting...");
         try {
+            txtArduino.setText("connecting");
             btSocket.connect();
+            txtArduino.setText("connected");
             Log.d(TAG, "....Connection ok...");
         } catch (IOException e) {
             try {
