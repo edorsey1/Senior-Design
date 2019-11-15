@@ -8,7 +8,8 @@ process.env.DEBUG = 'dialogflow:*'; // enables lib debugging statements
 admin.initializeApp(functions.config().firebase);
 const db = admin.firestore();
 
-var count = 0;
+var instructionCount = 0;
+var ingredientCount = 0;
 
 exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, response) => {
   const agent = new WebhookClient({ request, response });
@@ -53,7 +54,7 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, resp
   }
 
   // Intent to begin recipe by retrieving title
-  function start (agent) {
+  function recipeStart (agent) {
     const dialogflowAgentDoc = db.collection('recipes').doc('demoRecipe');
 
     return dialogflowAgentDoc.get()
@@ -61,7 +62,7 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, resp
         if (!doc.exists) {
           agent.add('No data for recipe found');
         } else {
-          agent.add('Starting the recipe for ' + doc.data().title);
+          agent.add('This recipe is for ' + doc.data().title);
         }
         return Promise.resolve('Read complete');
       }).catch(() => {
@@ -70,7 +71,7 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, resp
   }
 
   // Intent to return recipe details
-  function details (agent) {
+  function recipeDetails (agent) {
     const dialogflowAgentDoc = db.collection('recipes').doc('demoRecipe');
 
     return dialogflowAgentDoc.get()
@@ -86,19 +87,17 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, resp
       });
   }
 
-  // Intent to return instructions
-  function ingredientRead (agent) {
+  // Intent to start instructions
+  function instructionStart (agent) {
     const dialogflowAgentDoc = db.collection('recipes').doc('demoRecipe');
-    var i;
     return dialogflowAgentDoc.get()
       .then(doc => {
         if (!doc.exists) {
           agent.add('No data for recipe found');
         } else {
-          agent.add('The ingredients for this recipe are: ');
-          for (i = 0; i < 3; i++) {
-            agent.add(doc.data().ingredient[i]);
-          }
+          agent.add('The first instruction is: ');
+          agent.add(doc.data().instruction[0]);
+          instructionCount++;
         }
         return Promise.resolve('Read complete');
       }).catch(() => {
@@ -106,42 +105,17 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, resp
       });
   }
 
-  // Intent to read each instruction
-  function next (agent) {
+  // Intent to start ingredients
+  function ingredientStart (agent) {
     const dialogflowAgentDoc = db.collection('recipes').doc('demoRecipe');
     return dialogflowAgentDoc.get()
       .then(doc => {
         if (!doc.exists) {
           agent.add('No data for recipe found');
         } else {
-          if (count < 7) {
-            agent.add(doc.data().instruction[count]);
-          }
-          else {
-            agent.add('You are finished!');
-          }
-          count++;
-        }
-        return Promise.resolve('Read complete');
-      }).catch(() => {
-        agent.add('No data for recipe found');
-      });
-  }
-
-  // Intent to repeat previous instruction
-  function repeat (agent) {
-    const dialogflowAgentDoc = db.collection('recipes').doc('demoRecipe');
-    return dialogflowAgentDoc.get()
-      .then(doc => {
-        if (!doc.exists) {
-          agent.add('No data for recipe found');
-        } else {
-          if (count <= 7) {
-            agent.add(doc.data().instruction[count-1]);
-          }
-          else {
-            agent.add('You are finished!');
-          }
+          agent.add('The first ingredient is: ');
+          agent.add(doc.data().ingredient[0]);
+          ingredientCount++;
         }
         return Promise.resolve('Read complete');
       }).catch(() => {
@@ -150,7 +124,7 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, resp
   }
 
   // Intent to jump to a specific instruction
-  function jump1 (agent) {
+  function instructionJump (agent) {
     const stepNum = agent.parameters.stepNum;
     var num = 0;
     const dialogflowAgentDoc = db.collection('recipes').doc('demoRecipe');
@@ -194,16 +168,41 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, resp
               num = 10;
               break;
             case 'last':
-              num = length - 1;
+              num = length;
+              break;
+            case 'next':
+              if (instructionCount == 0) {
+                num = 1;
+              }
+              else {
+                instructionCount++;
+                num = instructionCount;
+              }
+              break;
+            case 'repeat':
+              num = instructionCount;
+              break;
+            case 'back':
+              if (instructionCount == 0) {
+                num = 0;
+              }
+              else {
+                instructionCount--;
+                num = instructionCount;
+              }
               break;
           }
 
-          if ((num > length) || (num == 0)) {
+          if (num > length) {
             agent.add('The recipe only has ' + length + ' instructions.');
+          }
+          else if (num == 0)
+          {
+            agent.add("That is not a valid instruction. Please clarify which instruction you would like.")
           }
           else {
             agent.add(doc.data().instruction[num-1]);
-            count = num;
+            instructionCount = num;
           }
         }
         return Promise.resolve('Read complete');
@@ -213,7 +212,7 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, resp
   }
 
   // Intent to jump to a specific ingredient
-  function jump2 (agent) {
+  function ingredientJump (agent) {
     const stepNum = agent.parameters.stepNum;
     var num = 0;
     const dialogflowAgentDoc = db.collection('recipes').doc('demoRecipe');
@@ -257,15 +256,41 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, resp
               num = 10;
               break;
             case 'last':
-              num = length - 1;
+              num = length;
+              break;
+            case 'next':
+              if (ingredientCount == 0) {
+                num = 1;
+              }
+              else {
+                ingredientCount++;
+                num = ingredientCount;
+              }
+              break;
+            case 'repeat':
+              num = ingredientCount;
+              break;
+            case 'back':
+              if (ingredientCount == 0) {
+                num = 0;
+              }
+              else {
+                ingredientCount--;
+                num = ingredientCount;
+              }
               break;
           }
 
-          if ((num > length) || (num == 0)) {
+          if (num > length) {
             agent.add('The recipe only has ' + length + ' ingredients.');
+          }
+          else if (num == 0)
+          {
+            agent.add("That is not a valid ingredient. Please clarify which ingredient you would like.")
           }
           else {
             agent.add(doc.data().ingredient[num-1]);
+            ingredientCount = num;
           }
         }
         return Promise.resolve('Read complete');
@@ -278,12 +303,11 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, resp
   let intentMap = new Map();
   intentMap.set('ReadFromFirestore', readFromDb);
   intentMap.set('WriteToFirestore', writeToDb);
-  intentMap.set('recipeStart', start);
-  intentMap.set('recipeDetails', details);
-  intentMap.set('ingredientStart', ingredientRead);
-  intentMap.set('instructionNext', next);
-  intentMap.set('instructionRepeat', repeat);
-  intentMap.set('instructionJump', jump1);
-  intentMap.set('ingredientJump', jump2);
+  intentMap.set('recipeStart', recipeStart);
+  intentMap.set('recipeDetails', recipeDetails);
+  intentMap.set('instructionStart', instructionStart);
+  intentMap.set('ingredientStart', ingredientStart);
+  intentMap.set('instructionJump', instructionJump);
+  intentMap.set('ingredientJump', ingredientJump);
   agent.handleRequest(intentMap);
 });
