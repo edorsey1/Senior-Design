@@ -4,6 +4,35 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.SignInButton;
+import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GoogleAuthProvider;
+
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -46,12 +75,42 @@ public class blue_tooth extends AppCompatActivity {
 
     // MAC-address of Bluetooth module (you must edit this line)
     private static String address = "00:14:03:06:16:AD";
+    Button button;
+    FirebaseAuth mAuth;
+    FirebaseAuth.AuthStateListener mAuthListener;
+    private GoogleSignInClient mGoogleSignInClient;
+    @Override
+    protected void onStart(){
+        super.onStart();
+        mAuth.addAuthStateListener(mAuthListener);
 
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_blue_tooth);
+        button = (Button) findViewById(R.id.sign_out);
+        mAuth = FirebaseAuth.getInstance();
+
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mAuth.signOut();
+
+            }
+        });
+
+        mAuthListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                if (firebaseAuth.getCurrentUser() == null) {
+                    startActivity(new Intent(blue_tooth.this, MainActivity.class));
+                    finish();
+                }
+            }
+        };
+
 
   //      btnOn = (Button) findViewById(R.id.btnOn);					// button LED ON
     //    btnOff = (Button) findViewById(R.id.btnOff);				// button LED OFF

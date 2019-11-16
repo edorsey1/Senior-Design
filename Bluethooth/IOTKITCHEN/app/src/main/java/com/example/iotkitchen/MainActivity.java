@@ -86,6 +86,7 @@ public class MainActivity extends AppCompatActivity {
         super.onStart();
         // Check if user is signed in (non-null) and update UI accordingly.
         mAuth.addAuthStateListener(mAuthListener);
+        mGoogleSignInClient.revokeAccess();
     }
 
     private void signIn() {
