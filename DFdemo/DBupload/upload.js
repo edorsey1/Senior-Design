@@ -10,9 +10,26 @@ const db = admin.firestore();
 
 var instructionCount = 0;
 var ingredientCount = 0;
+var recipe;
 
 exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, response) => {
   const agent = new WebhookClient({ request, response });
+
+  // Assigns database variable depending on title of recipe
+  // If no recipe is specified, assign it to default
+  try {
+    const recipeTitle = agent.parameters.recipeTitle;
+    if (recipeTitle == 'Peanut Butter Cups')
+    {
+      recipe = 'PeanutButterCups';
+    }
+    else if ((recipeTitle == 'Beef and Broccoli') || (recipeTitle == 'Beef and Broccoli Stir Fry'))
+    {
+      recipe = 'BeefandBroccoli';
+    }
+  } catch (err) {
+    recipe = 'Test-123';
+  }
 
   // Test function to write to database
   function writeToDb (agent) {
@@ -55,7 +72,8 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, resp
 
   // Intent to begin recipe by retrieving title
   function recipeStart (agent) {
-    const dialogflowAgentDoc = db.collection('recipes').doc('demoRecipe');
+
+    const dialogflowAgentDoc = db.collection('recipes').doc(recipe);
 
     return dialogflowAgentDoc.get()
       .then(doc => {
@@ -72,7 +90,7 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, resp
 
   // Intent to return recipe details
   function recipeDetails (agent) {
-    const dialogflowAgentDoc = db.collection('recipes').doc('demoRecipe');
+    const dialogflowAgentDoc = db.collection('recipes').doc(recipe);
 
     return dialogflowAgentDoc.get()
       .then(doc => {
@@ -89,7 +107,7 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, resp
 
   // Intent to start instructions
   function instructionStart (agent) {
-    const dialogflowAgentDoc = db.collection('recipes').doc('demoRecipe');
+    const dialogflowAgentDoc = db.collection('recipes').doc(recipe);
     return dialogflowAgentDoc.get()
       .then(doc => {
         if (!doc.exists) {
@@ -107,7 +125,7 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, resp
 
   // Intent to start ingredients
   function ingredientStart (agent) {
-    const dialogflowAgentDoc = db.collection('recipes').doc('demoRecipe');
+    const dialogflowAgentDoc = db.collection('recipes').doc(recipe);
     return dialogflowAgentDoc.get()
       .then(doc => {
         if (!doc.exists) {
@@ -127,7 +145,7 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, resp
   function instructionJump (agent) {
     const stepNum = agent.parameters.stepNum;
     var num = 0;
-    const dialogflowAgentDoc = db.collection('recipes').doc('demoRecipe');
+    const dialogflowAgentDoc = db.collection('recipes').doc(recipe);
     return dialogflowAgentDoc.get()
       .then(doc => {
         if (!doc.exists) {
@@ -198,7 +216,7 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, resp
           }
           else if (num == 0)
           {
-            agent.add("That is not a valid instruction. Please clarify which instruction you would like.")
+            agent.add("That is not a valid instruction. Please clarify which instruction you would like.");
           }
           else {
             agent.add(doc.data().instruction[num-1]);
@@ -215,7 +233,7 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, resp
   function ingredientJump (agent) {
     const stepNum = agent.parameters.stepNum;
     var num = 0;
-    const dialogflowAgentDoc = db.collection('recipes').doc('demoRecipe');
+    const dialogflowAgentDoc = db.collection('recipes').doc(recipe);
     return dialogflowAgentDoc.get()
       .then(doc => {
         if (!doc.exists) {
@@ -286,7 +304,7 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, resp
           }
           else if (num == 0)
           {
-            agent.add("That is not a valid ingredient. Please clarify which ingredient you would like.")
+            agent.add("That is not a valid ingredient. Please clarify which ingredient you would like.");
           }
           else {
             agent.add(doc.data().ingredient[num-1]);
