@@ -78,13 +78,14 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, resp
     return dialogflowAgentDoc.get()
       .then(doc => {
         if (!doc.exists) {
-          agent.add('No data for recipe found');
+          agent.add('No data for recipe found. Please try another recipe.');
         } else {
           agent.add('This recipe is for ' + doc.data().title);
+          agent.add('Would you like to hear the details, ingredients, or instructions for this recipe?');
         }
         return Promise.resolve('Read complete');
       }).catch(() => {
-        agent.add('No data for recipe found');
+        agent.add('No data for recipe found. Please try another recipe.');
       });
   }
 
@@ -95,13 +96,14 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, resp
     return dialogflowAgentDoc.get()
       .then(doc => {
         if (!doc.exists) {
-          agent.add('No data for recipe found');
+          agent.add('No data for recipe found. Please try another recipe.');
         } else {
           agent.add('Details for this recipe: ' + doc.data().detail);
+          agent.add('Would you like to hear the ingredients or instructions for this recipe?');
         }
         return Promise.resolve('Read complete');
       }).catch(() => {
-        agent.add('No data for recipe found');
+        agent.add('No data for recipe found. Please try another recipe.');
       });
   }
 
@@ -111,15 +113,16 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, resp
     return dialogflowAgentDoc.get()
       .then(doc => {
         if (!doc.exists) {
-          agent.add('No data for recipe found');
+          agent.add('No data for recipe found. Please try another recipe.');
         } else {
           agent.add('The first instruction is: ');
           agent.add(doc.data().instruction[0]);
           instructionCount++;
+          agent.add('Next?');
         }
         return Promise.resolve('Read complete');
       }).catch(() => {
-        agent.add('No data for recipe found');
+        agent.add('No data for recipe found. Please try another recipe.');
       });
   }
 
@@ -129,15 +132,16 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, resp
     return dialogflowAgentDoc.get()
       .then(doc => {
         if (!doc.exists) {
-          agent.add('No data for recipe found');
+          agent.add('No data for recipe found. Please try another recipe.');
         } else {
           agent.add('The first ingredient is: ');
           agent.add(doc.data().ingredient[0]);
           ingredientCount++;
+          agent.add('Next?');
         }
         return Promise.resolve('Read complete');
       }).catch(() => {
-        agent.add('No data for recipe found');
+        agent.add('No data for recipe found. Please try another recipe.');
       });
   }
 
@@ -149,7 +153,7 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, resp
     return dialogflowAgentDoc.get()
       .then(doc => {
         if (!doc.exists) {
-          agent.add('This recipe does not exist');
+          agent.add('This recipe does not exist.. Please try another recipe.');
         }
         else {
           var length = doc.data().instruction.length;
@@ -213,6 +217,7 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, resp
 
           if (num > length) {
             agent.add('The recipe only has ' + length + ' instructions.');
+            agent.add('Please clarify which instruction you would like.');
           }
           else if (num == 0)
           {
@@ -221,11 +226,12 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, resp
           else {
             agent.add(doc.data().instruction[num-1]);
             instructionCount = num;
+            agent.add('Next?');
           }
         }
         return Promise.resolve('Read complete');
       }).catch(() => {
-        agent.add('No data for recipe found');
+        agent.add('No data for recipe found. Please try another recipe.');
       });
   }
 
@@ -237,7 +243,7 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, resp
     return dialogflowAgentDoc.get()
       .then(doc => {
         if (!doc.exists) {
-          agent.add('This recipe does not exist');
+          agent.add('This recipe does not exist. Please try another recipe.');
         }
         else {
           var length = doc.data().ingredient.length;
@@ -301,6 +307,7 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, resp
 
           if (num > length) {
             agent.add('The recipe only has ' + length + ' ingredients.');
+            agent.add('Please clarify which ingredient you would like');
           }
           else if (num == 0)
           {
@@ -309,11 +316,12 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, resp
           else {
             agent.add(doc.data().ingredient[num-1]);
             ingredientCount = num;
+            agent.add('Next?');
           }
         }
         return Promise.resolve('Read complete');
       }).catch(() => {
-        agent.add('No data for recipe found');
+        agent.add('No data for recipe found. Please try another recipe.');
       });
   }
 
