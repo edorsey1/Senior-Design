@@ -5,6 +5,6 @@ Arduino Test Code - Code for scale prototype test
 
 Bluetooth - 
 
-MealDB - Code for database of recipes for use in app
+MealDB - Code for database of recipes for use in app with categories, recipes, instructions etc.
 
 Voice - NLU text to speech proof of concept and Dialogflow fulfillment code and backup
