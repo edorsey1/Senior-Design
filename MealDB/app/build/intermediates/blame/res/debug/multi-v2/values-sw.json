@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "C:\\Users\\ydkzh\\Desktop\\MealDB\\MealDB\\app\\build\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values-sw\\values-sw.xml",
+            "outputFile": "C:\\Users\\ydkzh\\Desktop\\20-21-IotKitchen\\MealDB\\app\\build\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values-sw\\values-sw.xml",
             "map": [
                 {
                     "source": "C:\\Users\\ydkzh\\.gradle\\caches\\transforms-1\\files-1.1\\support-compat-28.0.0.aar\\8fbca1d8a4ba75cda1b32598ae09cbb6\\res\\values-sw\\values-sw.xml",
