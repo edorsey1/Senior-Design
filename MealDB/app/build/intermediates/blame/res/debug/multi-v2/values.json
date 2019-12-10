@@ -1,27 +1,8 @@
 {
     "logs": [
         {
-            "outputFile": "C:\\Users\\ydkzh\\Desktop\\MealDB\\MealDB\\app\\build\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values\\values.xml",
+            "outputFile": "C:\\Users\\ydkzh\\Desktop\\20-21-IotKitchen\\MealDB\\app\\build\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values\\values.xml",
             "map": [
-                {
-                    "source": "C:\\Users\\ydkzh\\Desktop\\MealDB\\MealDB\\app\\src\\main\\res\\values\\styles.xml",
-                    "from": {
-                        "startLines": "3",
-                        "startColumns": "4",
-                        "startOffsets": "54",
-                        "endLines": "9",
-                        "endColumns": "12",
-                        "endOffsets": "428"
-                    },
-                    "to": {
-                        "startLines": "601",
-                        "startColumns": "4",
-                        "startOffsets": "37147",
-                        "endLines": "607",
-                        "endColumns": "12",
-                        "endOffsets": "37521"
-                    }
-                },
                 {
                     "source": "C:\\Users\\ydkzh\\.gradle\\caches\\transforms-1\\files-1.1\\support-compat-28.0.0.aar\\8fbca1d8a4ba75cda1b32598ae09cbb6\\res\\values\\values.xml",
                     "from": {
@@ -61,23 +42,6 @@
                     }
                 },
                 {
-                    "source": "C:\\Users\\ydkzh\\Desktop\\MealDB\\MealDB\\app\\src\\main\\res\\values\\strings.xml",
-                    "from": {
-                        "startLines": "1",
-                        "startColumns": "4",
-                        "startOffsets": "16",
-                        "endColumns": "47",
-                        "endOffsets": "59"
-                    },
-                    "to": {
-                        "startLines": "576",
-                        "startColumns": "4",
-                        "startOffsets": "34464",
-                        "endColumns": "47",
-                        "endOffsets": "34507"
-                    }
-                },
-                {
                     "source": "C:\\Users\\ydkzh\\.gradle\\caches\\transforms-1\\files-1.1\\library-3.3.1.aar\\8bfbbab3ed55c83456ad1b1494235cb5\\res\\values\\values.xml",
                     "from": {
                         "startLines": "2",
@@ -95,20 +59,39 @@
                     }
                 },
                 {
-                    "source": "C:\\Users\\ydkzh\\Desktop\\MealDB\\MealDB\\app\\src\\main\\res\\values\\dimen.xml",
+                    "source": "C:\\Users\\ydkzh\\Desktop\\20-21-IotKitchen\\MealDB\\app\\src\\main\\res\\values\\styles.xml",
                     "from": {
-                        "startLines": "4,2,6,5,3",
-                        "startColumns": "4,4,4,4,4",
-                        "startOffsets": "161,55,273,221,107",
-                        "endColumns": "59,51,57,51,53",
-                        "endOffsets": "216,102,326,268,156"
+                        "startLines": "3",
+                        "startColumns": "4",
+                        "startOffsets": "54",
+                        "endLines": "9",
+                        "endColumns": "12",
+                        "endOffsets": "428"
                     },
                     "to": {
-                        "startLines": "466,467,468,469,470",
-                        "startColumns": "4,4,4,4,4",
-                        "startOffsets": "27938,27998,28050,28108,28160",
-                        "endColumns": "59,51,57,51,53",
-                        "endOffsets": "27993,28045,28103,28155,28209"
+                        "startLines": "601",
+                        "startColumns": "4",
+                        "startOffsets": "37147",
+                        "endLines": "607",
+                        "endColumns": "12",
+                        "endOffsets": "37521"
+                    }
+                },
+                {
+                    "source": "C:\\Users\\ydkzh\\Desktop\\20-21-IotKitchen\\MealDB\\app\\src\\main\\res\\values\\strings.xml",
+                    "from": {
+                        "startLines": "1",
+                        "startColumns": "4",
+                        "startOffsets": "16",
+                        "endColumns": "47",
+                        "endOffsets": "59"
+                    },
+                    "to": {
+                        "startLines": "576",
+                        "startColumns": "4",
+                        "startOffsets": "34464",
+                        "endColumns": "47",
+                        "endOffsets": "34507"
                     }
                 },
                 {
@@ -148,20 +131,20 @@
                     }
                 },
                 {
-                    "source": "C:\\Users\\ydkzh\\Desktop\\MealDB\\MealDB\\app\\src\\main\\res\\values\\colors.xml",
+                    "source": "C:\\Users\\ydkzh\\Desktop\\20-21-IotKitchen\\MealDB\\app\\src\\main\\res\\values\\dimen.xml",
                     "from": {
-                        "startLines": "4,2,3,5",
-                        "startColumns": "4,4,4,4",
-                        "startOffsets": "153,55,102,199",
-                        "endColumns": "45,46,50,37",
-                        "endOffsets": "194,97,148,232"
+                        "startLines": "4,2,6,5,3",
+                        "startColumns": "4,4,4,4,4",
+                        "startOffsets": "161,55,273,221,107",
+                        "endColumns": "59,51,57,51,53",
+                        "endOffsets": "216,102,326,268,156"
                     },
                     "to": {
-                        "startLines": "192,193,194,246",
-                        "startColumns": "4,4,4,4",
-                        "startOffsets": "9973,10019,10066,13505",
-                        "endColumns": "45,46,50,37",
-                        "endOffsets": "10014,10061,10112,13538"
+                        "startLines": "466,467,468,469,470",
+                        "startColumns": "4,4,4,4,4",
+                        "startOffsets": "27938,27998,28050,28108,28160",
+                        "endColumns": "59,51,57,51,53",
+                        "endOffsets": "27993,28045,28103,28155,28209"
                     }
                 },
                 {
@@ -251,6 +234,23 @@
                         "startOffsets": "233179",
                         "endColumns": "313",
                         "endOffsets": "233488"
+                    }
+                },
+                {
+                    "source": "C:\\Users\\ydkzh\\Desktop\\20-21-IotKitchen\\MealDB\\app\\src\\main\\res\\values\\colors.xml",
+                    "from": {
+                        "startLines": "4,2,3,5",
+                        "startColumns": "4,4,4,4",
+                        "startOffsets": "153,55,102,199",
+                        "endColumns": "45,46,50,37",
+                        "endOffsets": "194,97,148,232"
+                    },
+                    "to": {
+                        "startLines": "192,193,194,246",
+                        "startColumns": "4,4,4,4",
+                        "startOffsets": "9973,10019,10066,13505",
+                        "endColumns": "45,46,50,37",
+                        "endOffsets": "10014,10061,10112,13538"
                     }
                 },
                 {

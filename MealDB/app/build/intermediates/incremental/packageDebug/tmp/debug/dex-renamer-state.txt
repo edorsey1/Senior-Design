@@ -1,7 +1,7 @@
-#Tue Dec 10 13:20:52 EST 2019
-base.0=C\:\\Users\\ydkzh\\Desktop\\MealDB\\MealDB\\app\\build\\intermediates\\dex\\debug\\mergeProjectDexDebug\\out
+#Tue Dec 10 15:39:34 EST 2019
+base.0=C\:\\Users\\ydkzh\\Desktop\\20-21-IotKitchen\\MealDB\\app\\build\\intermediates\\dex\\debug\\mergeProjectDexDebug\\out
 path.1=classes.dex
 renamed.1=classes2.dex
 path.0=classes.dex
 renamed.0=classes.dex
-base.1=C\:\\Users\\ydkzh\\Desktop\\MealDB\\MealDB\\app\\build\\intermediates\\dex\\debug\\mergeExtDexDebug\\out
+base.1=C\:\\Users\\ydkzh\\Desktop\\20-21-IotKitchen\\MealDB\\app\\build\\intermediates\\dex\\debug\\mergeExtDexDebug\\out
