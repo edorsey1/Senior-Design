@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "C:\\Users\\ydkzh\\Desktop\\MVVM-MealDB-master\\MVVM-MealDB-master\\app\\build\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values-v21\\values-v21.xml",
+            "outputFile": "C:\\Users\\ydkzh\\Desktop\\MealDB\\MealDB\\app\\build\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values-v21\\values-v21.xml",
             "map": [
                 {
                     "source": "C:\\Users\\ydkzh\\.gradle\\caches\\transforms-1\\files-1.1\\design-28.0.0.aar\\b674d0b75b4c21854a9dbc821968e027\\res\\values-v21\\values-v21.xml",

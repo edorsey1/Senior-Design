@@ -1181,6 +1181,7 @@ id scroll
 id scrollIndicatorDown
 id scrollIndicatorUp
 id scrollView
+id scrollView2
 id scrollable
 id search_badge
 id search_bar
@@ -1228,8 +1229,10 @@ id textView
 id textView2
 id textView3
 id textView4
+id textView5
 id textWatcher
 id text_details_category
+id text_details_ingredients
 id text_details_instruction
 id text_details_origin
 id text_details_title
