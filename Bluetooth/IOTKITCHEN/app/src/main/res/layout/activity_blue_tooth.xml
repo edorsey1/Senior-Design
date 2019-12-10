@@ -1,40 +1,54 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+    android:layout_height="match_parent">
+
 
     <TextView
         android:id="@+id/txtArduino"
-        android:layout_width="411dp"
-        android:layout_height="100dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:layout_alignParentStart="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
-        android:layout_marginStart="1dp"
-        android:layout_marginLeft="1dp"
-        android:layout_marginTop="101dp"
-        android:text="" />
+        android:layout_marginBottom="382dp"
+        android:fontFamily="sans-serif-black"
+        android:text=""
+        android:textSize="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/bluet" />
 
     <TextView
         android:id="@+id/bluet"
-        android:layout_width="411dp"
-        android:layout_height="100dp"
+        android:layout_width="254dp"
+        android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
-        android:layout_marginStart="1dp"
-        android:layout_marginLeft="1dp"
-        android:layout_marginTop="511dp"
-        android:text="This is the Bluetooth page" />
+        android:layout_marginStart="17dp"
+        android:layout_marginBottom="28dp"
+        android:fontFamily="sans-serif-black"
+        android:text="Weight:"
+        android:textSize="34dp"
+        app:layout_constraintBottom_toTopOf="@+id/txtArduino"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/sign_out" />
 
     <ImageView
         android:id="@+id/imageView1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="349dp"
         android:alpha="0.5"
-        ></ImageView>
+        app:layout_constraintBottom_toTopOf="@+id/imageView2"
+        app:layout_constraintEnd_toStartOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"></ImageView>
 
     <Button
         android:id="@+id/sign_out"
@@ -43,7 +57,24 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_centerVertical="true"
-        android:layout_marginStart="284dp"
-        android:layout_marginTop="345dp"
-        android:text="Log out" />
-</RelativeLayout>
+        android:layout_marginStart="58dp"
+        android:layout_marginTop="22dp"
+        android:layout_marginBottom="3dp"
+        android:text="Log out"
+        app:layout_constraintBottom_toTopOf="@+id/bluet"
+        app:layout_constraintStart_toEndOf="@+id/bluet"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/imageView2"
+        android:layout_width="559dp"
+        android:layout_height="0dp"
+
+        android:adjustViewBounds="true"
+        android:cropToPadding="false"
+
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView1"
+        app:srcCompat="@drawable/asdf"
+        tools:layout_editor_absoluteX="-84dp" />
+</androidx.constraintlayout.widget.ConstraintLayout>

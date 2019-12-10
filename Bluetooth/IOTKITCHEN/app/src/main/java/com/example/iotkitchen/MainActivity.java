@@ -54,6 +54,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        //image
         button = (SignInButton) findViewById(R.id.Google_signin_Button);
         text = (TextView) findViewById(R.id.text);
         mAuth = FirebaseAuth.getInstance();
