@@ -31,6 +31,10 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, resp
     recipe = 'Test-123';
   }
 
+  if (recipe == null) {
+    recipe = 'Test-123';
+  }
+
   // Test function to write to database
   function writeToDb (agent) {
     // Get parameter from Dialogflow with the string to add to the database
@@ -81,7 +85,7 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, resp
           agent.add('No data for recipe found. Please try another recipe.');
         } else {
           agent.add('This recipe is for ' + doc.data().title);
-          agent.add('Would you like to hear the details, ingredients, or instructions for this recipe?');
+          agent.add('Would you like to hear the servings, time, ingredients, or instructions for this recipe?');
         }
         return Promise.resolve('Read complete');
       }).catch(() => {
@@ -89,8 +93,8 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, resp
       });
   }
 
-  // Intent to return recipe details
-  function recipeDetails (agent) {
+  // Intent to return recipe servings
+  function recipeServe (agent) {
     const dialogflowAgentDoc = db.collection('recipes').doc(recipe);
 
     return dialogflowAgentDoc.get()
@@ -98,8 +102,26 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, resp
         if (!doc.exists) {
           agent.add('No data for recipe found. Please try another recipe.');
         } else {
-          agent.add('Details for this recipe: ' + doc.data().detail);
-          agent.add('Would you like to hear the ingredients or instructions for this recipe?');
+          agent.add('This recipe makes: ' + doc.data().servings);
+          agent.add('Would you like to hear the time, ingredients, or instructions for this recipe?');
+        }
+        return Promise.resolve('Read complete');
+      }).catch(() => {
+        agent.add('No data for recipe found. Please try another recipe.');
+      });
+  }
+
+  // Intent to return recipe time
+  function recipeTime (agent) {
+    const dialogflowAgentDoc = db.collection('recipes').doc(recipe);
+
+    return dialogflowAgentDoc.get()
+      .then(doc => {
+        if (!doc.exists) {
+          agent.add('No data for recipe found. Please try another recipe.');
+        } else {
+          agent.add('This recipe takes: ' + doc.data().time);
+          agent.add('Would you like to hear the servings, ingredients, or instructions for this recipe?');
         }
         return Promise.resolve('Read complete');
       }).catch(() => {
@@ -325,15 +347,54 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, resp
       });
   }
 
+  function changeServe (agent) {
+    // Get parameter from Dialogflow with the string to add to the database
+    const serveNum = agent.parameters.serveNum;
+
+    const dialogflowAgentRef = db.collection('recipes').doc(recipe);
+    return db.runTransaction(t => {
+      t.update(dialogflowAgentRef, {servings: `${serveNum} servings`});
+      return Promise.resolve('Write complete');
+    }).then(doc => {
+      agent.add(`Changed recipe to make ${serveNum} servings.`);
+      agent.add('What would you like to do next?');
+    }).catch(err => {
+      console.log(`Error writing to Firestore: ${err}`);
+      agent.add(`Failed to change recipe to make ${serveNum} servings.`);
+      agent.add('What would you like to do next?');
+    });
+  }
+
+  function changeTime (agent) {
+    // Get parameter from Dialogflow with the string to add to the database
+    const recipeTime = agent.parameters.recipeTime;
+
+    const dialogflowAgentRef = db.collection('recipes').doc(recipe);
+    return db.runTransaction(t => {
+      t.update(dialogflowAgentRef, {time: recipeTime});
+      return Promise.resolve('Write complete');
+    }).then(doc => {
+      agent.add(`Changed recipe to take ${recipeTime}.`);
+      agent.add('What would you like to do next?');
+    }).catch(err => {
+      console.log(`Error writing to Firestore: ${err}`);
+      agent.add(`Failed to change recipe to take ${recipeTime}.`);
+      agent.add('What would you like to do next?');
+    });
+  }
+
   // Map from Dialogflow intent names to functions to be run when the intent is matched
   let intentMap = new Map();
   intentMap.set('ReadFromFirestore', readFromDb);
   intentMap.set('WriteToFirestore', writeToDb);
   intentMap.set('recipeStart', recipeStart);
-  intentMap.set('recipeDetails', recipeDetails);
+  intentMap.set('recipeServe', recipeServe);
+  intentMap.set('recipeTime', recipeTime);
   intentMap.set('instructionStart', instructionStart);
   intentMap.set('ingredientStart', ingredientStart);
   intentMap.set('instructionJump', instructionJump);
   intentMap.set('ingredientJump', ingredientJump);
+  intentMap.set('changeServe', changeServe);
+  intentMap.set('changeTime', changeTime);
   agent.handleRequest(intentMap);
 });
