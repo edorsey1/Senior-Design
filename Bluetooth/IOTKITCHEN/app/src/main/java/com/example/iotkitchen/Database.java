@@ -58,10 +58,10 @@ public class Database extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_database);
-        a=(TextView)findViewById(R.id.Ingredient);
-        b=(TextView)findViewById(R.id.procedure);
-        c=(TextView)findViewById(R.id.unit);
-        d=(TextView)findViewById(R.id.weight);
+        a=(TextView)findViewById(R.id.Ingredient_view);
+        b=(TextView)findViewById(R.id.procedure_view);
+        c=(TextView)findViewById(R.id.unit_view);
+        d=(TextView)findViewById(R.id.weight_view);
         e=(TextView)findViewById(R.id.step);
         next=(Button)findViewById(R.id.next);
         previous=(Button)findViewById(R.id.previous);
@@ -71,7 +71,7 @@ public class Database extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 child =(int)dataSnapshot.getChildrenCount();
-                e.setText(Integer.toString(child));
+                e.setText(Integer.toString(child)+" "+"steps in total");
             }
 
             @Override
@@ -97,6 +97,7 @@ public class Database extends AppCompatActivity {
                             b.setText(procedure);
                             c.setText(unit);
                             d.setText(weight);
+                            e.setText("step"+" "+""+i+"");
                         }
 
                         @Override
@@ -126,6 +127,7 @@ public class Database extends AppCompatActivity {
                             b.setText(procedure);
                             c.setText(unit);
                             d.setText(weight);
+                            e.setText("step"+" "+""+i+"");
                         }
 
                         @Override
