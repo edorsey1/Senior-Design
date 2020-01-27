@@ -347,40 +347,57 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, resp
       });
   }
 
+  // Intent to edit the number of servings in a recipe
   function changeServe (agent) {
-    // Get parameter from Dialogflow with the string to add to the database
     const serveNum = agent.parameters.serveNum;
 
     const dialogflowAgentRef = db.collection('recipes').doc(recipe);
-    return db.runTransaction(t => {
-      t.update(dialogflowAgentRef, {servings: `${serveNum} servings`});
-      return Promise.resolve('Write complete');
-    }).then(doc => {
-      agent.add(`Changed recipe to make ${serveNum} servings.`);
-      agent.add('What would you like to do next?');
-    }).catch(err => {
-      console.log(`Error writing to Firestore: ${err}`);
-      agent.add(`Failed to change recipe to make ${serveNum} servings.`);
-      agent.add('What would you like to do next?');
-    });
+
+    if (serveNum) // Error checking to make sure that this parameter has a value
+    {
+      return db.runTransaction(t => {
+        t.update(dialogflowAgentRef, {servings: `${serveNum} servings`});
+        return Promise.resolve('Write complete');
+      }).then(doc => {
+        agent.add(`Changed recipe to make ${serveNum} servings.`);
+        agent.add('What would you like to do next?');
+      }).catch(err => {
+        console.log(`Error writing to Firestore: ${err}`);
+        agent.add(`Failed to change recipe to make ${serveNum} servings.`);
+        agent.add('What would you like to do next?');
+      });
+    }
+    else
+    {
+      agent.add("Please try again and specify the number of servings you would like to change this recipe to.");
+    }
   }
 
+  // Intent to change the time a recipe takes
   function changeTime (agent) {
-    // Get parameter from Dialogflow with the string to add to the database
     const recipeTime = agent.parameters.recipeTime;
 
     const dialogflowAgentRef = db.collection('recipes').doc(recipe);
-    return db.runTransaction(t => {
-      t.update(dialogflowAgentRef, {time: recipeTime});
-      return Promise.resolve('Write complete');
-    }).then(doc => {
-      agent.add(`Changed recipe to take ${recipeTime}.`);
-      agent.add('What would you like to do next?');
-    }).catch(err => {
-      console.log(`Error writing to Firestore: ${err}`);
-      agent.add(`Failed to change recipe to take ${recipeTime}.`);
-      agent.add('What would you like to do next?');
-    });
+
+    if (recipeTime)
+    {
+      return db.runTransaction(t => {
+        t.update(dialogflowAgentRef, {time: recipeTime});
+        return Promise.resolve('Write complete');
+      }).then(doc => {
+        agent.add(`Changed recipe to take ${recipeTime}.`);
+        agent.add('What would you like to do next?');
+      }).catch(err => {
+        console.log(`Error writing to Firestore: ${err}`);
+        agent.add(`Failed to change recipe to take ${recipeTime}.`);
+        agent.add('What would you like to do next?');
+      });
+    }
+    else
+    {
+      agent.add("Please try again and specify the amount of time this recipe will take.");
+    }
+
   }
 
   // Map from Dialogflow intent names to functions to be run when the intent is matched
