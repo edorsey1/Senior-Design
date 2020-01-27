@@ -23,14 +23,6 @@
           }
         },
         {
-          "client_id": "102205265956-r57818oc8p8ebt23r4sf9sndgq604tv2.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.example.iotkitchen",
-            "certificate_hash": "421d7df7d2c9d21943e4a0ea68ac4db1e8a8c321"
-          }
-        },
-        {
           "client_id": "102205265956-vsm3fhvoidps6h2a20at2khi25rkq1m9.apps.googleusercontent.com",
           "client_type": 3
         }
