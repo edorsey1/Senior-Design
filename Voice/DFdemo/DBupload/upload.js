@@ -397,7 +397,73 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, resp
     {
       agent.add("Please try again and specify the amount of time this recipe will take.");
     }
+  }
 
+  // Intent to change ingredient
+  function changeIngredient (agent) {
+    const stepNum = agent.parameters.stepNum;
+    const ingredientText = agent.parameters.any;
+    var num = 0;
+    //var length = db.collection('recipes').doc(recipe).data().ingredient.length;
+
+    //const dialogflowAgentRef = db.collection('recipes').doc(recipe);
+    const ingredientRef = db.collection('recipes').doc(recipe).data().ingredient;
+
+
+    if (stepNum && ingredientText)
+    {
+      switch (stepNum) {
+        case 'first':
+          num = 0;
+          break;
+        case 'second':
+          num = 1;
+          break;
+        case 'third':
+          num = 2;
+          break;
+        case 'fourth':
+          num = 3;
+          break;
+        case 'fifth':
+          num = 4;
+          break;
+        case 'sixth':
+          num = 5;
+          break;
+        case 'seventh':
+          num = 6;
+          break;
+        case 'eighth':
+          num = 7;
+          break;
+        case 'ninth':
+          num = 8;
+          break;
+        case 'tenth':
+          num = 9;
+          break;
+        case 'last':
+          num = length - 1;
+          break;
+      }
+
+      return db.runTransaction(t => {
+        t.update(ingredientRef, {[num]: ingredientText});
+        return Promise.resolve('Write complete');
+      }).then(doc => {
+        agent.add(`Changed ingredient ${num} to ${ingredientText}.`);
+        agent.add('What would you like to do next?');
+      }).catch(err => {
+        console.log(`Error writing to Firestore: ${err}`);
+        agent.add(`Failed to change ingredient ${num}.`);
+        agent.add('What would you like to do next?');
+      });
+    }
+    else
+    {
+      agent.add("Please try again and specify the number of the ingredient you would like to change and what to change it to.");
+    }
   }
 
   // Map from Dialogflow intent names to functions to be run when the intent is matched
@@ -413,5 +479,6 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, resp
   intentMap.set('ingredientJump', ingredientJump);
   intentMap.set('changeServe', changeServe);
   intentMap.set('changeTime', changeTime);
+  intentMap.set('changeIngredient', changeIngredient);
   agent.handleRequest(intentMap);
 });
