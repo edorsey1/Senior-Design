@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -44,16 +45,27 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 
 public class Database extends AppCompatActivity {
     Button next,previous;
     TextView a,b,c,d,e;
-    DatabaseReference reff,count;
-    int child;
-    int i=0;
-    String childcount;
-
+    String recipe;
+    int i=1;
+    int size;
+    FirebaseFirestore mDatabase= FirebaseFirestore.getInstance();
+    private static final String TAG = "MainActivity";
+    ArrayAdapter<String> adapter;
+    List<String> list;
+    DocumentReference docref;
+    Map<String,Map<String,String>> map;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,82 +78,79 @@ public class Database extends AppCompatActivity {
         next=(Button)findViewById(R.id.next);
         previous=(Button)findViewById(R.id.previous);
 
-        count=FirebaseDatabase.getInstance().getReference().child("Recipe").child("Beef");
-        count.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                child =(int)dataSnapshot.getChildrenCount();
-                e.setText(Integer.toString(child)+" "+"steps in total");
-            }
 
+        recipe =getIntent().getStringExtra("Listviewclickvalue");
+        docref=mDatabase.collection("recipes").document(""+recipe+"");
+        docref.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if(task.isSuccessful()){
+                    list = new ArrayList<>();
 
+                    DocumentSnapshot document = task.getResult();
+                    if(document.exists()){
+                        map= (Map<String, Map<String,String>>) document.getData().get("instruction");
+                            size= map.size();
+                        String procedure = map.get("step1").get("procedure");
+                        String unit = map.get("step1").get("unit");
+                        String weight =map.get("step1").get("weight");
+                        String ingredient =map.get("step1").get("ingredient");
+                        a.setText(ingredient);
+                        b.setText(procedure);
+                        c.setText(unit);
+                        d.setText(weight);
+                        e.setText("step"+" "+""+i+"");
+
+                    }
+                }
             }
         });
 
         next.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view){
-                if(i<child){
+                if(i<size){
                     i=i+1;
-                    reff= FirebaseDatabase.getInstance().getReference().child("Recipe").child("Beef").child("step"+""+i+"");
-                    reff.addValueEventListener(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            String ingredient= dataSnapshot.child("Ingredient").getValue().toString();
-                            String procedure= dataSnapshot.child("procedure").getValue().toString();
-                            String unit= dataSnapshot.child("unit").getValue().toString();
-                            String weight= dataSnapshot.child("weight").getValue().toString();
-                            a.setText(ingredient);
-                            b.setText(procedure);
-                            c.setText(unit);
-                            d.setText(weight);
-                            e.setText("step"+" "+""+i+"");
-                        }
+                    String procedure = map.get("step"+i+"").get("procedure");
+                    String unit = map.get("step"+i+"").get("unit");
+                    String weight =map.get("step"+i+"").get("weight");
+                    String ingredient =map.get("step"+i+"").get("ingredient");
+                    a.setText(ingredient);
+                    b.setText(procedure);
+                    c.setText(unit);
+                    d.setText(weight);
+                    e.setText("step"+" "+""+i+"");
 
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                        }
-                    });
                 }
-            }
 
-        });
 
+                }
+            });
         previous.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view){
                 if(i>1){
                     i=i-1;
-                    reff= FirebaseDatabase.getInstance().getReference().child("Recipe").child("Beef").child("step"+""+i+"");
-                    reff.addValueEventListener(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            String ingredient= dataSnapshot.child("Ingredient").getValue().toString();
-                            String procedure= dataSnapshot.child("procedure").getValue().toString();
-                            String unit= dataSnapshot.child("unit").getValue().toString();
-                            String weight= dataSnapshot.child("weight").getValue().toString();
-                            a.setText(ingredient);
-                            b.setText(procedure);
-                            c.setText(unit);
-                            d.setText(weight);
-                            e.setText("step"+" "+""+i+"");
+                    String procedure = map.get("step"+i+"").get("procedure");
+                    String unit = map.get("step"+i+"").get("unit");
+                    String weight =map.get("step"+i+"").get("weight");
+                    String ingredient =map.get("step"+i+"").get("ingredient");
+                    a.setText(ingredient);
+                    b.setText(procedure);
+                    c.setText(unit);
+                    d.setText(weight);
+
+                    a.setText(ingredient);
+                    b.setText(procedure);
+                    c.setText(unit);
+                    d.setText(weight);
+                    e.setText("step"+" "+""+i+"");
                         }
 
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                        }
-                    });
-                }
-            }
-
+                    };
         });
 
     }
-
 
 
 }

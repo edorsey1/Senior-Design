@@ -54,9 +54,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         button = (SignInButton) findViewById(R.id.Google_signin_Button);
         text = (TextView) findViewById(R.id.text);
         mAuth = FirebaseAuth.getInstance();
+        startActivity(new Intent(MainActivity.this, Recipe_select.class));
 
         button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -74,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 if (firebaseAuth.getCurrentUser() != null) {
-                    startActivity(new Intent(MainActivity.this, Database.class));
+                    startActivity(new Intent(MainActivity.this, Recipe_select.class));
                     finish();
                 }
             }
