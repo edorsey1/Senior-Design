@@ -8,8 +8,8 @@ process.env.DEBUG = 'dialogflow:*'; // enables lib debugging statements
 admin.initializeApp(functions.config().firebase);
 const db = admin.firestore();
 
-var instructionCount = 0;
-var ingredientCount = 0;
+var instructionCount = 1;
+var ingredientCount = 1;
 var recipe;
 
 exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, response) => {
@@ -17,6 +17,7 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, resp
 
   // Assigns database variable depending on title of recipe
   // If no recipe is specified, assign it to default
+  /*
   try {
     const recipeTitle = agent.parameters.recipeTitle;
     if (recipeTitle == 'Peanut Butter Cups')
@@ -33,7 +34,9 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, resp
 
   if (recipe == null) {
     recipe = 'Test-123';
-  }
+  } */
+
+  recipe = 'demoRecipe';  // For testing purposes
 
   // Test function to write to database
   function writeToDb (agent) {
@@ -44,7 +47,7 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, resp
     // the document  {entry: "<value of database entry>"} in the 'agent' document
     const dialogflowAgentRef = db.collection('dialogflow').doc('agent');
     return db.runTransaction(t => {
-      t.set(dialogflowAgentRef, {entry: databaseEntry});
+      t.set(dialogflowAgentRef, {entry: databaseEntry}, {merge: true});
       return Promise.resolve('Write complete');
     }).then(doc => {
       agent.add(`Wrote "${databaseEntry}" to the Firestore database.`);
@@ -65,7 +68,7 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, resp
         if (!doc.exists) {
           agent.add('No data found in the database!');
         } else {
-          agent.add(doc.data().entry);
+          agent.add(entry);
         }
         return Promise.resolve('Read complete');
       }).catch(() => {
@@ -131,14 +134,16 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, resp
 
   // Intent to start instructions
   function instructionStart (agent) {
+
     const dialogflowAgentDoc = db.collection('recipes').doc(recipe);
+
     return dialogflowAgentDoc.get()
       .then(doc => {
         if (!doc.exists) {
           agent.add('No data for recipe found. Please try another recipe.');
         } else {
           agent.add('The first instruction is: ');
-          agent.add(doc.data().instruction[0]);
+          agent.add(doc.data().instruction.step1.procedure);
           instructionCount++;
           agent.add('Next?');
         }
@@ -150,14 +155,16 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, resp
 
   // Intent to start ingredients
   function ingredientStart (agent) {
+
     const dialogflowAgentDoc = db.collection('recipes').doc(recipe);
+
     return dialogflowAgentDoc.get()
       .then(doc => {
         if (!doc.exists) {
           agent.add('No data for recipe found. Please try another recipe.');
         } else {
           agent.add('The first ingredient is: ');
-          agent.add(doc.data().ingredient[0]);
+          agent.add(doc.data().ingredient.i1);
           ingredientCount++;
           agent.add('Next?');
         }
@@ -169,16 +176,18 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, resp
 
   // Intent to jump to a specific instruction
   function instructionJump (agent) {
+
     const stepNum = agent.parameters.stepNum;
     var num = 0;
     const dialogflowAgentDoc = db.collection('recipes').doc(recipe);
+
     return dialogflowAgentDoc.get()
       .then(doc => {
         if (!doc.exists) {
           agent.add('This recipe does not exist.. Please try another recipe.');
         }
         else {
-          var length = doc.data().instruction.length;
+          var length = doc.data().numbers.instructions;
 
           switch (stepNum) {
             case 'first':
@@ -215,20 +224,15 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, resp
               num = length;
               break;
             case 'next':
-              if (instructionCount == 0) {
-                num = 1;
-              }
-              else {
-                instructionCount++;
-                num = instructionCount;
-              }
+              instructionCount++;
+              num = instructionCount;
               break;
             case 'repeat':
               num = instructionCount;
               break;
             case 'back':
-              if (instructionCount == 0) {
-                num = 0;
+              if (instructionCount == 1) {
+                num = 1;
               }
               else {
                 instructionCount--;
@@ -239,17 +243,19 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, resp
 
           if (num > length) {
             agent.add('The recipe only has ' + length + ' instructions.');
-            agent.add('Please clarify which instruction you would like.');
+            agent.add('Please clarify which instruction you would like');
           }
           else if (num == 0)
           {
             agent.add("That is not a valid instruction. Please clarify which instruction you would like.");
           }
           else {
-            agent.add(doc.data().instruction[num-1]);
+            var key = 'step' + num;
+            agent.add(doc.data().instruction[key].procedure);
             instructionCount = num;
             agent.add('Next?');
           }
+
         }
         return Promise.resolve('Read complete');
       }).catch(() => {
@@ -259,16 +265,18 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, resp
 
   // Intent to jump to a specific ingredient
   function ingredientJump (agent) {
+
     const stepNum = agent.parameters.stepNum;
     var num = 0;
     const dialogflowAgentDoc = db.collection('recipes').doc(recipe);
+
     return dialogflowAgentDoc.get()
       .then(doc => {
         if (!doc.exists) {
           agent.add('This recipe does not exist. Please try another recipe.');
         }
         else {
-          var length = doc.data().ingredient.length;
+          var length = doc.data().numbers.ingredients;
 
           switch (stepNum) {
             case 'first':
@@ -305,20 +313,15 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, resp
               num = length;
               break;
             case 'next':
-              if (ingredientCount == 0) {
-                num = 1;
-              }
-              else {
-                ingredientCount++;
-                num = ingredientCount;
-              }
+              ingredientCount++;
+              num = ingredientCount;
               break;
             case 'repeat':
               num = ingredientCount;
               break;
             case 'back':
-              if (ingredientCount == 0) {
-                num = 0;
+              if (ingredientCount == 1) {
+                num = 1;
               }
               else {
                 ingredientCount--;
@@ -336,7 +339,8 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, resp
             agent.add("That is not a valid ingredient. Please clarify which ingredient you would like.");
           }
           else {
-            agent.add(doc.data().ingredient[num-1]);
+            var key = 'i' + num;
+            agent.add(doc.data().ingredient[key]);
             ingredientCount = num;
             agent.add('Next?');
           }
@@ -401,62 +405,59 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, resp
 
   // Intent to change ingredient
   function changeIngredient (agent) {
+
+    const dialogflowAgentRef = db.collection('recipes').doc(recipe);
+
     const stepNum = agent.parameters.stepNum;
     const ingredientText = agent.parameters.any;
-    var num = 0;
-    //var length = db.collection('recipes').doc(recipe).data().ingredient.length;
-
-    //const dialogflowAgentRef = db.collection('recipes').doc(recipe);
-    const ingredientRef = db.collection('recipes').doc(recipe).data().ingredient;
-
+    var num = 1;
 
     if (stepNum && ingredientText)
     {
       switch (stepNum) {
         case 'first':
-          num = 0;
-          break;
-        case 'second':
           num = 1;
           break;
-        case 'third':
+        case 'second':
           num = 2;
           break;
-        case 'fourth':
+        case 'third':
           num = 3;
           break;
-        case 'fifth':
+        case 'fourth':
           num = 4;
           break;
-        case 'sixth':
+        case 'fifth':
           num = 5;
           break;
-        case 'seventh':
+        case 'sixth':
           num = 6;
           break;
-        case 'eighth':
+        case 'seventh':
           num = 7;
           break;
-        case 'ninth':
+        case 'eighth':
           num = 8;
           break;
-        case 'tenth':
+        case 'ninth':
           num = 9;
           break;
-        case 'last':
-          num = length - 1;
+        case 'tenth':
+          num = 10;
           break;
       }
 
+      var key = ('ingredient.i' + num);
+
       return db.runTransaction(t => {
-        t.update(ingredientRef, {[num]: ingredientText});
+        t.update(dialogflowAgentRef, {[key]: ingredientText});
         return Promise.resolve('Write complete');
       }).then(doc => {
-        agent.add(`Changed ingredient ${num} to ${ingredientText}.`);
+        agent.add(`Changed ${stepNum} ingredient to ${ingredientText}.`);
         agent.add('What would you like to do next?');
       }).catch(err => {
         console.log(`Error writing to Firestore: ${err}`);
-        agent.add(`Failed to change ingredient ${num}.`);
+        agent.add(`Failed to change the ${stepNum} ingredient.`);
         agent.add('What would you like to do next?');
       });
     }
