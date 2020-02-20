@@ -66,8 +66,14 @@
     <TextView
         android:id="@+id/weight_view"
         android:layout_width="match_parent"
-        android:layout_height="42dp"
+        android:layout_height="54dp"
         android:text="" />
+
+    <TextView
+        android:id="@+id/txtArduino"
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:text="TextView" />
 
     <Button
         android:id="@+id/next"

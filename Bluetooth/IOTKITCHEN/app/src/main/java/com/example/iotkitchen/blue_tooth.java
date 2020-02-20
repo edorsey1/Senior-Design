@@ -112,8 +112,6 @@ public class blue_tooth extends AppCompatActivity {
         };
 
 
-  //      btnOn = (Button) findViewById(R.id.btnOn);					// button LED ON
-    //    btnOff = (Button) findViewById(R.id.btnOff);				// button LED OFF
         txtArduino = (TextView) findViewById(R.id.txtArduino);		// for display the received data from the Arduino
         TextView text = (TextView) findViewById(R.id.bluet);
         h = new Handler() {
@@ -257,7 +255,7 @@ public class blue_tooth extends AppCompatActivity {
         finish();
     }
 
-    private class ConnectedThread extends Thread {
+    class ConnectedThread extends Thread {
         private final InputStream mmInStream;
         private final OutputStream mmOutStream;
 

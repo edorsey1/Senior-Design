@@ -3,12 +3,16 @@ package com.example.iotkitchen;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothSocket;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -24,6 +28,8 @@ public class ingredient extends AppCompatActivity {
     FirebaseFirestore mDatabase= FirebaseFirestore.getInstance();
     Button start;
 
+
+
     private ListView listView;
     private static final String TAG = "MainActivity";
     ArrayAdapter<String> adapter;
@@ -34,6 +40,7 @@ public class ingredient extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ingredient);
+
         start=(Button)findViewById(R.id.start);
          tempholder=getIntent().getStringExtra("Listviewclickvalue");
 
