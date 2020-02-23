@@ -1,6 +1,6 @@
 #include <HX711.h>
 #include <SoftwareSerial.h>
-#include <Wire.h>
+#include <Wire.h>               //https://bitbucket.org/fmalpartida/new-liquidcrystal/downloads/
 #include <LCD.h>
 #include <LiquidCrystal_I2C.h>
 
@@ -32,7 +32,7 @@ void setup() {
   first = true;
 
   lcd.begin(16,2);                      //Set up the LCD screen
-  lcd.setBacklightPin(3,POSITIVE);
+  //lcd.setBacklightPin(3,POSITIVE);
   lcd.setBacklight(HIGH);
   lcd.home();
   lcd.print("IoT Kitchen");  
