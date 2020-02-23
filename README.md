@@ -1,7 +1,7 @@
 # IoT_Kitchen
 Senior Design Project
 
-Arduino Test Code - Code for scale prototype test
+Arduino Test Code - All Arduino code.  Most recent test code is Scale_Micro and Temp_Micro.
 
 Bluetooth - 
 
