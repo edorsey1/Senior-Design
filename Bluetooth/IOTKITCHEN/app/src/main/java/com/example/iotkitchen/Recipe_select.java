@@ -6,7 +6,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -59,6 +61,21 @@ import java.util.List;
 
 
 public class Recipe_select extends AppCompatActivity {
+
+
+    //For Bottom Navigation Fragment
+    @Nullable
+    //@Override
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState)
+    {
+        return inflater.inflate(R.layout.activity_recipe_select, container, false);
+    }
+    //End of Bottom navigation layout
+
+
+
+
+
     FirebaseFirestore mDatabase= FirebaseFirestore.getInstance();
     Button start;
     private ListView listView;
