@@ -2,7 +2,15 @@ package com.example.iotkitchen;
 
 import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
+import android.support.annotation.NonNull;
+import android.support.design.widget.BottomNavigationView;
+import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.view.MenuItem;
+import android.view.MenuItem;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 public class Main2Activity extends AppCompatActivity {
@@ -50,31 +58,19 @@ public class Main2Activity extends AppCompatActivity {
 
     //Redo
 
-    private val mNavigationItemSelected = BottomNavigationView.OnNavigationItemSelectedListener
+    private BottomNavigationView.OnNavigationItemSelectedListener navListener =
+            new BottomNavigationView.OnNavigationItemSelectedListener() {
 
-    {
-        item ->
-                when(item.itemId)
-        {
-            R.id.nav_Recipe ->
-            {
-                openFragment(activity_recipe_select);
+                public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                    Fragment selectedFragment = null;
 
-                return @mNavigationItemSelected true
-            }
+                    switch (item.getItemId()) {
+                        case R.id.
+                            selectedFragment = new blue_tooth();
+                            break;
 
-
-        }
-
-    }
-        false
-
-
-    private void openFragment(fragment; Fragment)
-    {
-        val transaction = supportFragmentManager.beginTransaction()
-        transaction.replace(R.id.container, fragment)
-        transaction.addToBackStack(null)
-        transaction.commit()
+                    }
     }
 }
+
+
