@@ -11,6 +11,7 @@ const db = admin.firestore();
 var instructionCount = 1;
 var ingredientCount = 1;
 var recipe;
+var changeNum;
 
 exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, response) => {
   const agent = new WebhookClient({ request, response });
@@ -467,6 +468,156 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, resp
     }
   }
 
+  // Intent to launch instruction changing procedure
+  function changeInstruction (agent) {
+
+    const dialogflowAgentDoc = db.collection('recipes').doc(recipe);
+
+    const stepNum = agent.parameters.stepNum;
+
+    if (stepNum)
+    {
+      switch (stepNum) {
+        case 'first':
+          changeNum = 1;
+          break;
+        case 'second':
+          changeNum = 2;
+          break;
+        case 'third':
+          changeNum = 3;
+          break;
+        case 'fourth':
+          changeNum = 4;
+          break;
+        case 'fifth':
+          changeNum = 5;
+          break;
+        case 'sixth':
+          changeNum = 6;
+          break;
+        case 'seventh':
+          changeNum = 7;
+          break;
+        case 'eighth':
+          changeNum = 8;
+          break;
+        case 'ninth':
+          changeNum = 9;
+          break;
+        case 'tenth':
+          changeNum = 10;
+          break;
+      }
+
+    if (changeNum){
+      return dialogflowAgentDoc.get()
+        .then(doc => {
+          if (!doc.exists) {
+            agent.add('No data for recipe found. Please try another recipe.');
+          } else {
+            agent.add(`Changing instruction ${changeNum}:`);
+            agent.add('Please say "Ingredient is" followed by the ingredient. Say "Ingredient is none" if this instruction does not have an ingredient or "Ingredient is same" if you do not want the ingredient to change.');
+          }
+          return Promise.resolve('Read complete');
+        }).catch(() => {
+          agent.add('No data for recipe found. Please try another recipe.');
+        });
+    }
+    else
+    {
+      agent.add('Please try again and specify the instruction you would like to make edits to.');
+    }
+  }
+}
+
+  // Function to change the ingredient field in the instruction
+  function changeInstructionIngredient (agent) {
+
+    const dialogflowAgentRef = db.collection('recipes').doc(recipe);
+    const ingredientText = agent.parameters.any;
+    var keyI = ('instruction.step' + changeNum + '.ingredient');
+    var keyN = ('instruction.step' + changeNum + '.number');
+
+    switch (ingredientText) {
+      case 'none':
+        return db.runTransaction(t => {
+          t.update(dialogflowAgentRef, {[keyI]: '', [keyN]: 0});
+          return Promise.resolve('Write complete');
+        }).then(doc => {
+          agent.add('Ingredient cleared.');
+          agent.add('What is the procedure for this instruction? Please say "Procedure is" followed by the instruction procedure.');
+        }).catch(err => {
+          console.log(`Error writing to Firestore: ${err}`);
+          agent.add(`Failed to clear the ingredient in step ${changeNum}.`);
+          agent.add('Please try again.');
+        });
+
+      case 'same':
+        agent.add('Ingredient not changed.');
+        agent.add('What is the procedure for this instruction? Please say "Procedure is" followed by the instruction procedure.');
+        break;
+
+      default:
+        return db.runTransaction(t => {
+          t.update(dialogflowAgentRef, {[keyI]: ingredientText});
+          return Promise.resolve('Write complete');
+        }).then(doc => {
+          agent.add(`Changed ingredient to ${ingredientText}.`);
+          agent.add('What number ingredient does this instruction correspond to? Please say "Number is" followed by the number. Please say "Number is new" if this is a new ingredient.');
+        }).catch(err => {
+          console.log(`Error writing to Firestore: ${err}`);
+          agent.add(`Failed to clear the ingredient in step ${changeNum}.`);
+          agent.add('Please try again.');
+        });
+      }
+  }
+
+  // Function to change the ingredient field in the instruction
+  function changeInstructionNumber (agent) {
+
+    const dialogflowAgentRef = db.collection('recipes').doc(recipe);
+    //const valueNum = agent.parameters.any;
+    const ingredientNum = agent.parameters.stepNum;
+    var keyN = ('instruction.step' + changeNum + '.number');
+
+    return db.runTransaction(t => {
+      t.update(dialogflowAgentRef, {[keyN]: ingredientNum});
+      return Promise.resolve('Write complete');
+    }).then(doc => {
+      agent.add(`Changed number to ${ingredientNum}.`);
+      agent.add('What is the procedure for this instruction? Please say "Procedure is" followed by the instruction procedure.');
+    }).catch(err => {
+      console.log(`Error writing to Firestore: ${err}`);
+      agent.add(`Failed to set the ingredient number in step ${changeNum}.`);
+      agent.add('Please try again.');
+    });
+
+    // For new just have them specify the last number ? IE 4 if there are 3 ingredients
+    // Add in error checking to make sure they don't reference a massively large number??? 
+
+    /*
+    if (valueNum == 'new') {
+      var length = doc.data().numbers.ingredients;
+      var keyL = 'numbers.ingredients';
+      var num = length + 1;
+
+      return db.runTransaction(t => {
+        t.update(dialogflowAgentRef, {[keyN]: num, [keyL]: num});
+        return Promise.resolve('Write complete');
+      }).then(doc => {
+        agent.add(`Added new ingredient as  ${ingredientNum}.`);
+        agent.add('What is the procedure for this instruction? Please say "Procedure is" followed by the instruction procedure.');
+      }).catch(err => {
+        console.log(`Error writing to Firestore: ${err}`);
+        agent.add(`Failed to set the ingredient number in step ${changeNum}.`);
+        agent.add('Please try again.');
+      });
+    }
+    else {
+    } */
+  }
+
   // Map from Dialogflow intent names to functions to be run when the intent is matched
   let intentMap = new Map();
   intentMap.set('ReadFromFirestore', readFromDb);
@@ -481,5 +632,8 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, resp
   intentMap.set('changeServe', changeServe);
   intentMap.set('changeTime', changeTime);
   intentMap.set('changeIngredient', changeIngredient);
+  intentMap.set('changeInstruction', changeInstruction);
+  intentMap.set('changeInstruction - Ingredient', changeInstructionIngredient);
+  intentMap.set('changeInstruction - Number', changeInstructionNumber);
   agent.handleRequest(intentMap);
 });
