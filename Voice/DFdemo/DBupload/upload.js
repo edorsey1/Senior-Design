@@ -8,10 +8,11 @@ process.env.DEBUG = 'dialogflow:*'; // enables lib debugging statements
 admin.initializeApp(functions.config().firebase);
 const db = admin.firestore();
 
-var instructionCount = 1;
-var ingredientCount = 1;
-var recipe;
-var changeNum;
+// Variables shared by multiple intents
+var instructionCount = 1;         // Number instruction user is currently on
+var ingredientCount = 1;          // Number ingredient user is currently on
+var recipe;                       // Name of recipe user is making
+var changeNum;                    // 
 
 exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, response) => {
   const agent = new WebhookClient({ request, response });
@@ -567,13 +568,13 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, resp
           agent.add('What number ingredient does this instruction correspond to? Please say "Number is" followed by the number. Please say "Number is new" if this is a new ingredient.');
         }).catch(err => {
           console.log(`Error writing to Firestore: ${err}`);
-          agent.add(`Failed to clear the ingredient in step ${changeNum}.`);
+          agent.add(`Failed to change the ingredient in step ${changeNum}.`);
           agent.add('Please try again.');
         });
       }
   }
 
-  // Function to change the ingredient field in the instruction
+  // Function to change the number of ingredient that the instruction corresponds to by changing the number field of step
   function changeInstructionNumber (agent) {
 
     const dialogflowAgentRef = db.collection('recipes').doc(recipe);
@@ -589,12 +590,13 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, resp
       agent.add('What is the procedure for this instruction? Please say "Procedure is" followed by the instruction procedure.');
     }).catch(err => {
       console.log(`Error writing to Firestore: ${err}`);
-      agent.add(`Failed to set the ingredient number in step ${changeNum}.`);
+      agent.add(`Failed to change the ingredient number in step ${changeNum}.`);
       agent.add('Please try again.');
     });
 
     // For new just have them specify the last number ? IE 4 if there are 3 ingredients
-    // Add in error checking to make sure they don't reference a massively large number??? 
+    // Add in error checking to make sure they don't reference a massively large number???
+    // How to update ingredient once instruction updating is complete?
 
     /*
     if (valueNum == 'new') {
@@ -618,6 +620,76 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, resp
     } */
   }
 
+  // Function to change the procedure field in the instruction
+  function changeInstructionProcedure (agent) {
+
+    const dialogflowAgentRef = db.collection('recipes').doc(recipe);
+    const procedureText = agent.parameters.any;
+    var keyP = ('instruction.step' + changeNum + '.procedure');
+
+    if (procedureText == 'same') {
+      agent.add('Procedure is not changed.');
+      agent.add('What is the weight of the ingredient to be added in this procedure? Please say "Weight is" followed by the weight. Please say "Weight is none" if there is no weight involved in this procedure.');
+    }
+    else {
+      return db.runTransaction(t => {
+        t.update(dialogflowAgentRef, {[keyP]: procedureText});
+        return Promise.resolve('Write complete');
+      }).then(doc => {
+        agent.add(`Changed procedure to ${procedureText}.`);
+        agent.add('What is the weight of the ingredient to be added in this procedure? Please say "Weight is" followed by the numerical value of the weight. Please say "Weight is none" if there is no weight involved in this procedure, or "Weight is same" if you do not want to change it.');
+      }).catch(err => {
+        console.log(`Error writing to Firestore: ${err}`);
+        agent.add(`Failed to change the procedure in step ${changeNum}.`);
+        agent.add('Please try again.');
+      });
+    }
+  }
+
+  // Function to change the weight field in the instruction
+  function changeInstructionWeight (agent) {
+
+    const dialogflowAgentRef = db.collection('recipes').doc(recipe);
+    const weightNum = agent.parameters.number;
+    const weightText = agent.parameters.changeValue;
+    var keyW = ('instruction.step' + changeNum + '.weight');
+    var keyU = ('instruction.step' + changeNum + '.unit');
+
+    switch (weightText) {
+      case 'none':
+        return db.runTransaction(t => {
+          t.update(dialogflowAgentRef, {[keyW]: '', [keyU]: ''});
+          return Promise.resolve('Write complete');
+        }).then(doc => {
+          agent.add('Weight cleared.');
+          agent.add('Instruction change completed.');
+        }).catch(err => {
+          console.log(`Error writing to Firestore: ${err}`);
+          agent.add(`Failed to clear the weight in step ${changeNum}.`);
+          agent.add('Please try again.');
+        });
+
+      case 'same':
+        agent.add('Weight not changed.');
+        agent.add('Instruction change completed. What would you like to do next?');
+
+        break;
+
+      default:
+        return db.runTransaction(t => {
+          t.update(dialogflowAgentRef, {[keyW]: weightNum, [keyU]: 'g'});
+          return Promise.resolve('Write complete');
+        }).then(doc => {
+          agent.add(`Changed weight to ${weightNum}.`);
+          agent.add('Instruction change completed. What would you like to do next?');
+        }).catch(err => {
+          console.log(`Error writing to Firestore: ${err}`);
+          agent.add(`Failed to change the weight in step ${changeNum}.`);
+          agent.add('Please try again.');
+        });
+      }
+  }
+
   // Map from Dialogflow intent names to functions to be run when the intent is matched
   let intentMap = new Map();
   intentMap.set('ReadFromFirestore', readFromDb);
@@ -635,5 +707,7 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, resp
   intentMap.set('changeInstruction', changeInstruction);
   intentMap.set('changeInstruction - Ingredient', changeInstructionIngredient);
   intentMap.set('changeInstruction - Number', changeInstructionNumber);
+  intentMap.set('changeInstruction - Procedure', changeInstructionProcedure);
+  intentMap.set('changeInstruction - Weight', changeInstructionWeight);
   agent.handleRequest(intentMap);
 });
