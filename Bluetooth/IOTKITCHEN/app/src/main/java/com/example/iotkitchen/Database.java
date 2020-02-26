@@ -147,18 +147,18 @@ public class Database extends AppCompatActivity {
         setContentView(R.layout.activity_database);
 
         //Init and Assign Variables
-        BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.bottom_navigation);
+        BottomNavigationView bottomNavigationView =  findViewById(R.id.bottom_navigation);
 
         //Set Home
         //BottomNavigationView.setSelectedItemId(R.id.Database)
-        navigation.setSelectedItemId(R.id.nav_Scale);
+        bottomNavigationView.setSelectedItemId(R.id.nav_Scale);
 
         //Perform
-        navigation.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
                 //BottomNavigationView.setOnNavigationItemSelectedListener();
-                switch (item.getItemId()) {
+                switch (menuItem.getItemId()) {
 
                     case R.id.nav_Scale: //scale
 

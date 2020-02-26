@@ -22,21 +22,23 @@ public class MainActivity extends AppCompatActivity {
 
 
         super.onCreate(savedInstanceState);
+        //Sets the display for the screen of the activity
         setContentView(R.layout.activity_main);
 
 
         //Init and Assign Variables
-        BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.bottom_navigation);
+        BottomNavigationView bottomNavigationView =  findViewById(R.id.bottom_navigation);
 
-        //
-        navigation.setSelectedItemId(R.id.nav_home);
+        //For the navigation ICON
+        //navigation.setSelectedItemId(R.id.nav_home);
+        bottomNavigationView.setSelectedItemId(R.id.nav_home);
 
         //Perform
-        navigation.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
                 //BottomNavigationView.setOnNavigationItemSelectedListener();
-                switch (item.getItemId()) {
+                switch (menuItem.getItemId()) {
 
                     case R.id.nav_Scale: //scale
                         startActivity(new Intent(getApplicationContext()

@@ -70,17 +70,17 @@ public class Recipe_select extends AppCompatActivity {
         setContentView(R.layout.activity_database);
 
         //Init and Assign Variables
-        BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.bottom_navigation);
+        BottomNavigationView bottomNavigationView =  findViewById(R.id.bottom_navigation);
         //
         //setContentView(R.layout.activity_recipe_select);
-        navigation.setSelectedItemId(R.id.nav_Recipe);
+        bottomNavigationView.setSelectedItemId(R.id.nav_Recipe);
 
         //Perform
-        navigation.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
                 //BottomNavigationView.setOnNavigationItemSelectedListener();
-                switch (item.getItemId()) {
+                switch (menuItem.getItemId()) {
 
                     case R.id.nav_Scale: //scale
                         startActivity(new Intent(getApplicationContext()
