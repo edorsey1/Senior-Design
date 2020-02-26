@@ -10,6 +10,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -28,6 +29,7 @@ import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
@@ -65,6 +67,48 @@ import java.util.UUID;
 
 
 public class Database extends AppCompatActivity {
+
+    /*
+    protected void onCreate (Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_database);
+
+        //Init and Assign Variables
+        BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.bottom_navigation);
+
+        //Perform
+        navigation.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                //BottomNavigationView.setOnNavigationItemSelectedListener();
+                switch (item.getItemId()) {
+
+                    case R.id.nav_Scale: //scale
+                        startActivity(new Intent(getApplicationContext()
+                                , Database.class));
+                        overridePendingTransition(0, 0);
+                        return true;
+
+                    case R.id.nav_Recipe: //recipe
+                        startActivity(new Intent(getApplicationContext()
+                                , Recipe_select.class));
+                        overridePendingTransition(0, 0);
+                        return true;
+                }
+                return false;
+            }
+        });
+
+    }
+
+
+
+    */
+
+
+
+
     Button next,previous;
     TextView a,b,c,d,e;
     String recipe;
@@ -97,6 +141,53 @@ public class Database extends AppCompatActivity {
 // This is bluetooth;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        //Navigation
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_database);
+
+        //Init and Assign Variables
+        BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.bottom_navigation);
+
+        //Set Home
+        //BottomNavigationView.setSelectedItemId(R.id.Database)
+        navigation.setSelectedItemId(R.id.nav_Scale);
+
+        //Perform
+        navigation.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                //BottomNavigationView.setOnNavigationItemSelectedListener();
+                switch (item.getItemId()) {
+
+                    case R.id.nav_Scale: //scale
+
+                        return true;
+
+                    case R.id.nav_home:
+                        startActivity(new Intent(getApplicationContext()
+                                , MainActivity.class));
+                        overridePendingTransition(0, 0);
+                        return true;
+
+                    case R.id.nav_Recipe: //recipe
+                        startActivity(new Intent(getApplicationContext()
+                                , Recipe_select.class));
+                        overridePendingTransition(0, 0);
+                        return true;
+                }
+                return false;
+            }
+        });
+
+
+
+
+
+
+
+
+        //
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_database);
         a=(TextView)findViewById(R.id.Ingredient_view);

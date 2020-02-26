@@ -8,15 +8,12 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -34,13 +31,32 @@ import java.util.UUID;
 public class blue_tooth extends AppCompatActivity {
 
     //For Bottom Navigation Fragment
-    @Nullable
-    //@Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState)
-    {
+    /*
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
         return inflater.inflate(R.layout.activity_blue_tooth, container, false);
     }
-    //End of Bottom navigation layout
+    */
+
+
+    /*
+    @Override
+    protected void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_blue_tooth);
+
+    }
+    */
+
+
+
+
+
+
+
+
 
 
 

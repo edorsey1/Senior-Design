@@ -3,53 +3,89 @@ package com.example.iotkitchen;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.view.MenuItem;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.android.gms.auth.api.signin.GoogleSignIn;
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.android.gms.auth.api.signin.GoogleSignInClient;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.common.SignInButton;
-import com.google.android.gms.common.api.ApiException;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthCredential;
-import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.android.material.bottomnavigation.BottomNavigationItemView;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-//Fragment
-//
 
 
 
 public class MainActivity extends AppCompatActivity {
 
-    //
-    /*
-    //For Bottom Navigation Fragment
-    @Nullable
+
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState)
-    {
-        return inflater.inflate(R.layout.activity_main, container, false);
+    protected void onCreate(Bundle savedInstanceState) {
+
+
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+
+        //Init and Assign Variables
+        BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.bottom_navigation);
+
+        //
+        navigation.setSelectedItemId(R.id.nav_home);
+
+        //Perform
+        navigation.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                //BottomNavigationView.setOnNavigationItemSelectedListener();
+                switch (item.getItemId()) {
+
+                    case R.id.nav_Scale: //scale
+                        startActivity(new Intent(getApplicationContext()
+                                , Database.class));
+                        overridePendingTransition(0, 0);
+                        return true;
+
+                    case R.id.nav_home:
+                        return true;
+
+
+                    case R.id.nav_Recipe: //recipe
+                        startActivity(new Intent(getApplicationContext()
+                                , Recipe_select.class));
+                        overridePendingTransition(0, 0);
+                        return true;
+                }
+                return false;
+            }
+        });
     }
-    //End of Bottom navigation layout
-    */
+}
+
+                /*
+        navigation.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                switch (item.getItemId()) {
+
+                    case R.id.nav_Scale: //scale
+                        Intent a = new Intent(MainActivity.this,Database.class);
+                        startActivity(a);
+                        break;
+                    case R.id.nav_Recipe: //recipe
+                        Intent b = new Intent(MainActivity.this,Recipe_select.class);
+                        startActivity(b);
+                        break;
+                }
+                return false;
+            }
+        });
+    }
+    //ALL
 
 
 
 
 
-
-
+/*
     private static final String TAG = "GoogleActivity";
     SignInButton button;
     FirebaseAuth mAuth;
@@ -89,7 +125,8 @@ public class MainActivity extends AppCompatActivity {
             }
         };
     }
-
+*/
+/*
     @Override
     public void onStart() {
         super.onStart();
@@ -156,5 +193,6 @@ public class MainActivity extends AppCompatActivity {
 
     //private void signOut() {
     // }
-
 }
+ */
+

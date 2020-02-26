@@ -3,20 +3,19 @@ package com.example.iotkitchen;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -31,7 +30,7 @@ import java.util.List;
 public class Recipe_select extends AppCompatActivity {
 
 
-    //For Bottom Navigation Fragment
+    /*For Bottom Navigation Fragment
     @Nullable
     //@Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState)
@@ -42,6 +41,16 @@ public class Recipe_select extends AppCompatActivity {
 
     //End of Bottom navigation layout
 
+     */
+/*For Activity
+    @Override
+    protected void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        setContentView(r.layout.activity_recipe_select);
+
+    }
+*/
 
 
 
@@ -54,6 +63,53 @@ public class Recipe_select extends AppCompatActivity {
     List<String> list;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        //Navigation
+
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_database);
+
+        //Init and Assign Variables
+        BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.bottom_navigation);
+        //
+        //setContentView(R.layout.activity_recipe_select);
+        navigation.setSelectedItemId(R.id.nav_Recipe);
+
+        //Perform
+        navigation.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                //BottomNavigationView.setOnNavigationItemSelectedListener();
+                switch (item.getItemId()) {
+
+                    case R.id.nav_Scale: //scale
+                        startActivity(new Intent(getApplicationContext()
+                                , Database.class));
+                        overridePendingTransition(0, 0);
+                        return true;
+
+                    case R.id.nav_home:
+                        startActivity(new Intent(getApplicationContext()
+                                , MainActivity.class));
+                        overridePendingTransition(0, 0);
+                        return true;
+
+                    case R.id.nav_Recipe: //recipe
+                        return true;
+                }
+                return false;
+            }
+        });
+
+
+
+
+
+
+
+
+
+        //Navigation
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recipe_select);
         listView=(ListView)findViewById(R.id.database);
