@@ -108,6 +108,7 @@ public class Database extends AppCompatActivity {
 
 
 
+//Comment out starts here
 
     Button next,previous;
     TextView a,b,c,d,e;
@@ -130,7 +131,7 @@ public class Database extends AppCompatActivity {
     private BluetoothSocket btSocket = null;
     private StringBuilder sb = new StringBuilder();
 
-    private Database.ConnectedThread mConnectedThread;
+    //private Database.ConnectedThread mConnectedThread;
 
     // SPP UUID service
     private static final UUID MY_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
@@ -138,6 +139,8 @@ public class Database extends AppCompatActivity {
     // MAC-address of Bluetooth module (you must edit this line)
     private static String address = "00:14:03:06:16:AD";
     Button button;
+
+
 // This is bluetooth;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -147,7 +150,7 @@ public class Database extends AppCompatActivity {
         setContentView(R.layout.activity_database);
 
         //Init and Assign Variables
-        BottomNavigationView bottomNavigationView =  findViewById(R.id.bottom_navigation);
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
 
         //Set Home
         //BottomNavigationView.setSelectedItemId(R.id.Database)
@@ -181,107 +184,103 @@ public class Database extends AppCompatActivity {
         });
 
 
-
-
-
-
-
-
         //
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_database);
-        a=(TextView)findViewById(R.id.Ingredient_view);
-        b=(TextView)findViewById(R.id.procedure_view);
-        c=(TextView)findViewById(R.id.unit_view);
-        d=(TextView)findViewById(R.id.weight_view);
-        e=(TextView)findViewById(R.id.step);
-        next=(Button)findViewById(R.id.next);
-        previous=(Button)findViewById(R.id.previous);
+        a = (TextView) findViewById(R.id.Ingredient_view);
+        b = (TextView) findViewById(R.id.procedure_view);
+        c = (TextView) findViewById(R.id.unit_view);
+        d = (TextView) findViewById(R.id.weight_view);
+        e = (TextView) findViewById(R.id.step);
+        next = (Button) findViewById(R.id.next);
+        previous = (Button) findViewById(R.id.previous);
 
         //this is bluetooth
-        txtArduino = (TextView) findViewById(R.id.txtArduino);		// for display the received data from the Arduino
-        TextView text = (TextView) findViewById(R.id.bluet);
+        txtArduino = (TextView) findViewById(R.id.txtArduino);        // for display the received data from the Arduino
+        /*
         h = new Handler() {
             public void handleMessage(android.os.Message msg) {
                 switch (msg.what) {
-                    case RECIEVE_MESSAGE:													// if receive massage
+                    case RECIEVE_MESSAGE:                                                    // if receive massage
                         byte[] readBuf = (byte[]) msg.obj;
-                        String strIncom = new String(readBuf, 0, msg.arg1);					// create string from bytes array
-                        sb.append(strIncom);												// append string
-                        int endOfLineIndex = sb.indexOf("\r\n");							// determine the end-of-line
-                        if (endOfLineIndex > 0) { 											// if end-of-line,
-                            String sbprint = sb.substring(0, endOfLineIndex);				// extract string
-                            sb.delete(0, sb.length());										// and clear
-                            txtArduino.setText("Data from Arduino: " + sbprint); 	        // update TextView
+                        String strIncom = new String(readBuf, 0, msg.arg1);                    // create string from bytes array
+                        sb.append(strIncom);                                                // append string
+                        int endOfLineIndex = sb.indexOf("\r\n");                            // determine the end-of-line
+                        if (endOfLineIndex > 0) {                                            // if end-of-line,
+                            String sbprint = sb.substring(0, endOfLineIndex);                // extract string
+                            sb.delete(0, sb.length());                                        // and clear
+                            txtArduino.setText("Data from Arduino: " + sbprint);            // update TextView
                             //     btnOff.setEnabled(true);
                             //     btnOn.setEnabled(true);
                         }
                         //Log.d(TAG, "...String:"+ sb.toString() +  "Byte:" + msg.arg1 + "...");
                         break;
                 }
-            };
-        };
+            }
 
-        btAdapter = BluetoothAdapter.getDefaultAdapter();		// get Bluetooth adapter
-        checkBTState();
 
+        }
+        */
+
+/*
+        btAdapter = BluetoothAdapter.getDefaultAdapter();        // get Bluetooth adapter
+        //  checkBTState();
+*/
 //This is bluetooth
-        recipe =getIntent().getStringExtra("Listviewclickvalue");
-        docref=mDatabase.collection("recipes").document(""+recipe+"");
+        recipe = getIntent().getStringExtra("Listviewclickvalue");
+        docref = mDatabase.collection("recipes").document("" + recipe + "");
         docref.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if(task.isSuccessful()){
+                if (task.isSuccessful()) {
                     list = new ArrayList<>();
 
                     DocumentSnapshot document = task.getResult();
-                    if(document.exists()){
-                        map= (Map<String, Map<String,String>>) document.getData().get("instruction");
-                            size= map.size();
+                    if (document.exists()) {
+                        map = (Map<String, Map<String, String>>) document.getData().get("instruction");
+                        size = map.size();
                         String procedure = map.get("step1").get("procedure");
                         String unit = map.get("step1").get("unit");
-                        String weight =map.get("step1").get("weight");
-                        String ingredient =map.get("step1").get("ingredient");
+                        String weight = map.get("step1").get("weight");
+                        String ingredient = map.get("step1").get("ingredient");
                         a.setText(ingredient);
                         b.setText(procedure);
                         c.setText(unit);
                         d.setText(weight);
-                        e.setText("step"+" "+""+i+"");
+                        e.setText("step" + " " + "" + i + "");
 
                     }
                 }
             }
         });
 
-        next.setOnClickListener(new View.OnClickListener(){
+        next.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view){
-                if(i<size){
-                    i=i+1;
-                    String procedure = map.get("step"+i+"").get("procedure");
-                    String unit = map.get("step"+i+"").get("unit");
-                    String weight =map.get("step"+i+"").get("weight");
-                    String ingredient =map.get("step"+i+"").get("ingredient");
+            public void onClick(View view) {
+                if (i < size) {
+                    i = i + 1;
+                    String procedure = map.get("step" + i + "").get("procedure");
+                    String unit = map.get("step" + i + "").get("unit");
+                    String weight = map.get("step" + i + "").get("weight");
+                    String ingredient = map.get("step" + i + "").get("ingredient");
                     a.setText(ingredient);
                     b.setText(procedure);
                     c.setText(unit);
                     d.setText(weight);
-                    e.setText("step"+" "+""+i+"");
+                    e.setText("step" + " " + "" + i + "");
 
                 }
 
 
-                }
-            });
-        previous.setOnClickListener(new View.OnClickListener(){
+            }
+        });
+        previous.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view){
-                if(i>1){
-                    i=i-1;
-                    String procedure = map.get("step"+i+"").get("procedure");
-                    String unit = map.get("step"+i+"").get("unit");
-                    String weight =map.get("step"+i+"").get("weight");
-                    String ingredient =map.get("step"+i+"").get("ingredient");
+            public void onClick(View view) {
+                if (i > 1) {
+                    i = i - 1;
+                    String procedure = map.get("step" + i + "").get("procedure");
+                    String unit = map.get("step" + i + "").get("unit");
+                    String weight = map.get("step" + i + "").get("weight");
+                    String ingredient = map.get("step" + i + "").get("ingredient");
                     a.setText(ingredient);
                     b.setText(procedure);
                     c.setText(unit);
@@ -291,15 +290,16 @@ public class Database extends AppCompatActivity {
                     b.setText(procedure);
                     c.setText(unit);
                     d.setText(weight);
-                    e.setText("step"+" "+""+i+"");
-                        }
+                    e.setText("step" + " " + "" + i + "");
+                }
 
-                    };
+            }
+
+            ;
         });
 
-    }
 
-
+/*
     private BluetoothSocket createBluetoothSocket(BluetoothDevice device) throws IOException {
         if(Build.VERSION.SDK_INT >= 10){
             try {
@@ -340,6 +340,7 @@ public class Database extends AppCompatActivity {
 
         // Discovery is resource intensive.  Make sure it isn't going on
         // when you attempt to connect and pass your message.
+/*
         btAdapter.cancelDiscovery();
 
         // Establish the connection.  This will block until it connects.
@@ -411,7 +412,8 @@ public class Database extends AppCompatActivity {
             try {
                 tmpIn = socket.getInputStream();
                 tmpOut = socket.getOutputStream();
-            } catch (IOException e) { }
+            } catch (IOException e) {
+            }
 
             mmInStream = tmpIn;
             mmOutStream = tmpOut;
@@ -425,15 +427,16 @@ public class Database extends AppCompatActivity {
             while (true) {
                 try {
                     // Read from the InputStream
-                    bytes = mmInStream.read(buffer);		// Get number of bytes and message in "buffer"
-                    h.obtainMessage(RECIEVE_MESSAGE, bytes, -1, buffer).sendToTarget();		// Send to message queue Handler
+                    bytes = mmInStream.read(buffer);        // Get number of bytes and message in "buffer"
+                    h.obtainMessage(RECIEVE_MESSAGE, bytes, -1, buffer).sendToTarget();        // Send to message queue Handler
                 } catch (IOException e) {
                     break;
                 }
             }
         }
-
+*/
         /* Call this from the main activity to send data to the remote device */
+/*
         public void write(String message) {
             Log.d(TAG, "...Data to send: " + message + "...");
             byte[] msgBuffer = message.getBytes();
@@ -443,5 +446,6 @@ public class Database extends AppCompatActivity {
                 Log.d(TAG, "...Error data send: " + e.getMessage() + "...");
             }
         }
-    }
+*/
+        }
 }

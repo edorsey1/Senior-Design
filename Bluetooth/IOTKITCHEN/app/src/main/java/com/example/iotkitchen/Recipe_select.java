@@ -65,9 +65,9 @@ public class Recipe_select extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
 
         //Navigation
-
+/*
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_database);
+        setContentView(R.layout.activity_recipe_select);
 
         //Init and Assign Variables
         BottomNavigationView bottomNavigationView =  findViewById(R.id.bottom_navigation);
@@ -100,18 +100,46 @@ public class Recipe_select extends AppCompatActivity {
                 return false;
             }
         });
-
-
-
-
-
-
-
-
+        */
 
         //Navigation
+
         super.onCreate(savedInstanceState);
+        //setContentView(R.layout.activity_recipe_select);
         setContentView(R.layout.activity_recipe_select);
+
+        //Init and Assign Variables
+        BottomNavigationView bottomNavigationView =  findViewById(R.id.bottom_navigation);
+        //
+        //setContentView(R.layout.activity_recipe_select);
+        bottomNavigationView.setSelectedItemId(R.id.nav_Recipe);
+
+        //Perform
+        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+                //BottomNavigationView.setOnNavigationItemSelectedListener();
+                switch (menuItem.getItemId()) {
+
+                    case R.id.nav_Scale: //scale
+                        startActivity(new Intent(getApplicationContext()
+                                , Database.class));
+                        overridePendingTransition(0, 0);
+                        return true;
+
+                    case R.id.nav_home:
+                        startActivity(new Intent(getApplicationContext()
+                                , MainActivity.class));
+                        overridePendingTransition(0, 0);
+                        return true;
+
+                    case R.id.nav_Recipe: //recipe
+                        return true;
+                }
+                return false;
+            }
+        });
+        //
         listView=(ListView)findViewById(R.id.database);
         mDatabase.collection("recipes").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override

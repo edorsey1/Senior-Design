@@ -16,9 +16,7 @@
         <activity android:name=".Main2Activity"></activity>
         <activity android:name=".ingredient" />
         <activity android:name=".Recipe_select" />
-        <activity android:name=".signout" />
         <activity android:name=".Database" />
-        <activity android:name=".blue_tooth" />
         <activity android:name=".SecondActivity" />
         <activity android:name=".MainActivity">
             <intent-filter>
