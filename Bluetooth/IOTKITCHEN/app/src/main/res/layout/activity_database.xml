@@ -19,7 +19,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         app:itemTextColor="@color/cardview_light_background"
-        app:itemIconTint="@color/cardview_light_background"
+        app:itemIconTint="@color/colorAccent"
         app:menu="@menu/bottom_navigation"/>
 
     //back to linear layout
@@ -36,8 +36,9 @@
         <TextView
             android:id="@+id/step"
             android:layout_width="match_parent"
-            android:layout_height="34dp"
-            android:text="step" />
+            android:layout_height="wrap_content"
+            android:ems="6"
+            android:text="STEP" />
 
         <EditText
             android:id="@+id/Ingredient"
@@ -45,7 +46,7 @@
             android:layout_height="wrap_content"
             android:ems="10"
             android:inputType="textPersonName"
-            android:text="Ingredient" />
+            android:text="INGREDIENT" />
 
         <TextView
             android:id="@+id/Ingredient_view"
@@ -59,7 +60,7 @@
             android:layout_height="wrap_content"
             android:ems="10"
             android:inputType="textPersonName"
-            android:text="procedure" />
+            android:text="PROCEDURE" />
 
         <TextView
             android:id="@+id/procedure_view"
@@ -73,7 +74,7 @@
             android:layout_height="wrap_content"
             android:ems="10"
             android:inputType="textPersonName"
-            android:text="unit" />
+            android:text="UNIT" />
 
         <TextView
             android:id="@+id/unit_view"
@@ -87,7 +88,7 @@
             android:layout_height="wrap_content"
             android:ems="10"
             android:inputType="none"
-            android:text="weight" />
+            android:text="WEIGHT" />
 
         <TextView
             android:id="@+id/weight_view"
