@@ -5,11 +5,11 @@
     <item
         android:id="@+id/nav_home"
         android:icon="@drawable/ic_home_black_24dp"
-        android:title="Home" />
+        android:title="Devices" />
     <item
         android:id="@+id/nav_Scale"
         android:icon = "@drawable/ic_local_dining_black_24dp"
-        android:title="Scale"/>
+        android:title="Cook"/>
 
     <item
         android:id="@+id/nav_Recipe"

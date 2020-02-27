@@ -19,7 +19,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         app:itemTextColor="@color/cardview_light_background"
-        app:itemIconTint="@color/cardview_light_background"
+        app:itemIconTint="@color/colorAccent"
         app:menu="@menu/bottom_navigation"/>
 
     //Back to Linear
