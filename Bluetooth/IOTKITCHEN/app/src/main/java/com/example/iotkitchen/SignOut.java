@@ -66,25 +66,25 @@ import com.google.firebase.auth.GoogleAuthProvider;
 
 public class SignOut extends AppCompatActivity {
 
-/*
+
  Button button;
- FirebaseAuth mAuth;
  FirebaseAuth.AuthStateListener mAuthListener;
  GoogleSignInClient mGoogleSignInClient;
-*/
-/*
+
+
     @Override
     protected void onStart(){
         super.onStart();
-        mAuth.addAuthStateListener(mAuthListener);
+        MainActivity.mAuth.addAuthStateListener(mAuthListener);
 
     }
-*/
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_out);
 
+        button=(Button)findViewById(R.id.button);
 
         //Init and Assign Variables
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
@@ -127,14 +127,15 @@ public class SignOut extends AppCompatActivity {
         });
 
 
-/*
+
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mAuth.signOut();
+                MainActivity.mAuth.signOut();
 
             }
         });
+
 
 
 
@@ -147,7 +148,7 @@ public class SignOut extends AppCompatActivity {
                 }
             }
         };
-*/
+
 
     }
 

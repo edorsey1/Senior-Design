@@ -66,7 +66,7 @@ import com.google.firebase.auth.GoogleAuthProvider;
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "GoogleActivity";
     SignInButton button;
-    FirebaseAuth mAuth;
+    static FirebaseAuth mAuth;
     TextView text;
     FirebaseAuth.AuthStateListener mAuthListener;
     private GoogleSignInClient mGoogleSignInClient;
