@@ -10,10 +10,11 @@
         android:id="@+id/database"
         android:layout_width="match_parent"
         android:layout_height="521dp" />
+
     <Button
         android:id="@+id/start"
         android:layout_width="match_parent"
-        android:layout_height="30dp"
+        android:layout_height="55dp"
         android:text="start" />
 
 </LinearLayout>

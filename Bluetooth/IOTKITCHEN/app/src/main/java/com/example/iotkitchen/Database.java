@@ -68,70 +68,27 @@ import java.util.UUID;
 
 public class Database extends AppCompatActivity {
 
-    /*
-    protected void onCreate (Bundle savedInstanceState)
-    {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_database);
-
-        //Init and Assign Variables
-        BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.bottom_navigation);
-
-        //Perform
-        navigation.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                //BottomNavigationView.setOnNavigationItemSelectedListener();
-                switch (item.getItemId()) {
-
-                    case R.id.nav_Scale: //scale
-                        startActivity(new Intent(getApplicationContext()
-                                , Database.class));
-                        overridePendingTransition(0, 0);
-                        return true;
-
-                    case R.id.nav_Recipe: //recipe
-                        startActivity(new Intent(getApplicationContext()
-                                , Recipe_select.class));
-                        overridePendingTransition(0, 0);
-                        return true;
-                }
-                return false;
-            }
-        });
-
-    }
-
-
-
-    */
-
-
-
-//Comment out starts here
-
-    Button next,previous;
-    TextView a,b,c,d,e;
+    Button next, previous;
+    TextView a, b, c, d, e;
     String recipe;
-    int i=1;
+    int i = 1;
     int size;
-    FirebaseFirestore mDatabase= FirebaseFirestore.getInstance();
+    FirebaseFirestore mDatabase = FirebaseFirestore.getInstance();
     private static final String TAG = "MainActivity";
     ArrayAdapter<String> adapter;
     List<String> list;
     DocumentReference docref;
-    Map<String,Map<String,String>> map;
+    Map<String, Map<String, String>> map;
 
     //this is bluetooth
     TextView txtArduino;
     Handler h;
 
-    final int RECIEVE_MESSAGE = 1;		// Status  for Handler
+    final int RECIEVE_MESSAGE = 1;        // Status  for Handler
     private BluetoothAdapter btAdapter = null;
     private BluetoothSocket btSocket = null;
     private StringBuilder sb = new StringBuilder();
-
-    //private Database.ConnectedThread mConnectedThread;
+    private Database.ConnectedThread mConnectedThread;
 
     // SPP UUID service
     private static final UUID MY_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
@@ -141,7 +98,7 @@ public class Database extends AppCompatActivity {
     Button button;
 
 
-// This is bluetooth;
+    // This is bluetooth;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -195,7 +152,7 @@ public class Database extends AppCompatActivity {
 
         //this is bluetooth
         txtArduino = (TextView) findViewById(R.id.txtArduino);        // for display the received data from the Arduino
-        /*
+
         h = new Handler() {
             public void handleMessage(android.os.Message msg) {
                 switch (msg.what) {
@@ -207,6 +164,9 @@ public class Database extends AppCompatActivity {
                         if (endOfLineIndex > 0) {                                            // if end-of-line,
                             String sbprint = sb.substring(0, endOfLineIndex);                // extract string
                             sb.delete(0, sb.length());                                        // and clear
+
+                            //add code to break into two strings
+                            //make another txtview to whatever varaible and add into layout
                             txtArduino.setText("Data from Arduino: " + sbprint);            // update TextView
                             //     btnOff.setEnabled(true);
                             //     btnOn.setEnabled(true);
@@ -217,13 +177,12 @@ public class Database extends AppCompatActivity {
             }
 
 
-        }
-        */
+        };
 
-/*
+
         btAdapter = BluetoothAdapter.getDefaultAdapter();        // get Bluetooth adapter
         //  checkBTState();
-*/
+
 //This is bluetooth
         recipe = getIntent().getStringExtra("Listviewclickvalue");
         docref = mDatabase.collection("recipes").document("" + recipe + "");
@@ -297,50 +256,51 @@ public class Database extends AppCompatActivity {
 
             ;
         });
-
-
-/*
-    private BluetoothSocket createBluetoothSocket(BluetoothDevice device) throws IOException {
-        if(Build.VERSION.SDK_INT >= 10){
-            try {
-                final Method m = device.getClass().getMethod("createInsecureRfcommSocketToServiceRecord", new Class[] { UUID.class });
-                return (BluetoothSocket) m.invoke(device, MY_UUID);
-            } catch (Exception e) {
-                Log.e(TAG, "Could not create Insecure RFComm Connection",e);
-            }
-        }
-        return  device.createRfcommSocketToServiceRecord(MY_UUID);
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-
-        Log.d(TAG, "...onResume - try connect...");
-
-        // Set up a pointer to the remote node using it's address.
-        BluetoothDevice device = btAdapter.getRemoteDevice(address);
-
-        // Two things are needed to make a connection:
-        //   A MAC address, which we got above.
-        //   A Service ID or UUID.  In this case we are using the
-        //     UUID for SPP.
-
-        try {
-            btSocket = createBluetoothSocket(device);
-        } catch (IOException e) {
-            errorExit("Fatal Error", "In onResume() and socket create failed: " + e.getMessage() + ".");
+        private BluetoothSocket createBluetoothSocket (BluetoothDevice device) throws IOException {
+            if (Build.VERSION.SDK_INT >= 10) {
+                try {
+                    final Method m = device.getClass().getMethod("createInsecureRfcommSocketToServiceRecord", new Class[]{UUID.class});
+                    return (BluetoothSocket) m.invoke(device, MY_UUID);
+                } catch (Exception e) {
+                    Log.e(TAG, "Could not create Insecure RFComm Connection", e);
+                }
+            }
+            return device.createRfcommSocketToServiceRecord(MY_UUID);
         }
+
+        @Override
+        public void onResume () {
+            super.onResume();
+
+            Log.d(TAG, "...onResume - try connect...");
+
+            // Set up a pointer to the remote node using it's address.
+            BluetoothDevice device = btAdapter.getRemoteDevice(address);
+
+            // Two things are needed to make a connection:
+            //   A MAC address, which we got above.
+            //   A Service ID or UUID.  In this case we are using the
+            //     UUID for SPP.
+
+            try {
+                btSocket = createBluetoothSocket(device);
+            } catch (IOException e) {
+                errorExit("Fatal Error", "In onResume() and socket create failed: " + e.getMessage() + ".");
+            }
 
     /*try {
       btSocket = device.createRfcommSocketToServiceRecord(MY_UUID);
     } catch (IOException e) {
       errorExit("Fatal Error", "In onResume() and socket create failed: " + e.getMessage() + ".");
-    }*/
+    }
+    */
+
 
         // Discovery is resource intensive.  Make sure it isn't going on
         // when you attempt to connect and pass your message.
-/*
+
         btAdapter.cancelDiscovery();
 
         // Establish the connection.  This will block until it connects.
@@ -434,18 +394,20 @@ public class Database extends AppCompatActivity {
                 }
             }
         }
-*/
+
         /* Call this from the main activity to send data to the remote device */
-/*
-        public void write(String message) {
-            Log.d(TAG, "...Data to send: " + message + "...");
-            byte[] msgBuffer = message.getBytes();
-            try {
-                mmOutStream.write(msgBuffer);
-            } catch (IOException e) {
-                Log.d(TAG, "...Error data send: " + e.getMessage() + "...");
+
+            public void write (String message){
+                Log.d(TAG, "...Data to send: " + message + "...");
+                byte[] msgBuffer = message.getBytes();
+                try {
+                    mmOutStream.write(msgBuffer);
+                } catch (IOException e) {
+                    Log.d(TAG, "...Error data send: " + e.getMessage() + "...");
+                }
             }
-        }
-*/
-        }
+
+
+    }
 }
+
