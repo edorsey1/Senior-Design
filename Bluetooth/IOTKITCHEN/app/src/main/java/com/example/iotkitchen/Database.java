@@ -1,5 +1,23 @@
 package com.example.iotkitchen;
 
+import  androidx.appcompat.app.AppCompatActivity;
+
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothSocket;
+import android.content.Intent;
+import android.os.Build;
+import android.os.Bundle;
+import android.os.Handler;
+import android.util.Log;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.bluetooth.BluetoothAdapter;
@@ -55,6 +73,55 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.SetOptions;
+import com.google.firestore.v1.WriteResult;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.SignInButton;
+import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -66,6 +133,7 @@ import java.util.Map;
 import java.util.UUID;
 
 
+
 public class Database extends AppCompatActivity {
 
     Button next, previous;
@@ -74,11 +142,16 @@ public class Database extends AppCompatActivity {
     int i = 1;
     int size;
     FirebaseFirestore mDatabase = FirebaseFirestore.getInstance();
+    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+    String username = user.getDisplayName();
     private static final String TAG = "MainActivity";
     ArrayAdapter<String> adapter;
     List<String> list;
     DocumentReference docref;
+    DocumentReference  recipeStep;
     Map<String, Map<String, String>> map;
+
+    DocumentReference  userData;
 
     //this is bluetooth
     TextView txtArduino;
@@ -97,10 +170,18 @@ public class Database extends AppCompatActivity {
     private static String address = "00:14:03:06:16:AD";
     Button button;
 
+    Map<String, Object> data = new HashMap<>();
 
     // This is bluetooth;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        data.put("exist", true);
+
+        mDatabase.collection("users").document(username)
+                .set(data, SetOptions.merge());
+
+        userData = mDatabase.collection("users").document(username);
 
         //Navigation
         super.onCreate(savedInstanceState);
@@ -130,6 +211,11 @@ public class Database extends AppCompatActivity {
                         overridePendingTransition(0, 0);
                         return true;
 
+                    case R.id.nav_out:
+                        startActivity(new Intent(getApplicationContext()
+                                , SignOut.class));
+                        overridePendingTransition(0, 0);
+                        return true;
                     case R.id.nav_Recipe: //recipe
                         startActivity(new Intent(getApplicationContext()
                                 , Recipe_select.class));
@@ -258,37 +344,37 @@ public class Database extends AppCompatActivity {
         });
     }
 
-        private BluetoothSocket createBluetoothSocket (BluetoothDevice device) throws IOException {
-            if (Build.VERSION.SDK_INT >= 10) {
-                try {
-                    final Method m = device.getClass().getMethod("createInsecureRfcommSocketToServiceRecord", new Class[]{UUID.class});
-                    return (BluetoothSocket) m.invoke(device, MY_UUID);
-                } catch (Exception e) {
-                    Log.e(TAG, "Could not create Insecure RFComm Connection", e);
-                }
-            }
-            return device.createRfcommSocketToServiceRecord(MY_UUID);
-        }
-
-        @Override
-        public void onResume () {
-            super.onResume();
-
-            Log.d(TAG, "...onResume - try connect...");
-
-            // Set up a pointer to the remote node using it's address.
-            BluetoothDevice device = btAdapter.getRemoteDevice(address);
-
-            // Two things are needed to make a connection:
-            //   A MAC address, which we got above.
-            //   A Service ID or UUID.  In this case we are using the
-            //     UUID for SPP.
-
+    private BluetoothSocket createBluetoothSocket (BluetoothDevice device) throws IOException {
+        if (Build.VERSION.SDK_INT >= 10) {
             try {
-                btSocket = createBluetoothSocket(device);
-            } catch (IOException e) {
-                errorExit("Fatal Error", "In onResume() and socket create failed: " + e.getMessage() + ".");
+                final Method m = device.getClass().getMethod("createInsecureRfcommSocketToServiceRecord", new Class[]{UUID.class});
+                return (BluetoothSocket) m.invoke(device, MY_UUID);
+            } catch (Exception e) {
+                Log.e(TAG, "Could not create Insecure RFComm Connection", e);
             }
+        }
+        return device.createRfcommSocketToServiceRecord(MY_UUID);
+    }
+
+    @Override
+    public void onResume () {
+        super.onResume();
+
+        Log.d(TAG, "...onResume - try connect...");
+
+        // Set up a pointer to the remote node using it's address.
+        BluetoothDevice device = btAdapter.getRemoteDevice(address);
+
+        // Two things are needed to make a connection:
+        //   A MAC address, which we got above.
+        //   A Service ID or UUID.  In this case we are using the
+        //     UUID for SPP.
+
+        try {
+            btSocket = createBluetoothSocket(device);
+        } catch (IOException e) {
+            errorExit("Fatal Error", "In onResume() and socket create failed: " + e.getMessage() + ".");
+        }
 
     /*try {
       btSocket = device.createRfcommSocketToServiceRecord(MY_UUID);
@@ -397,17 +483,16 @@ public class Database extends AppCompatActivity {
 
         /* Call this from the main activity to send data to the remote device */
 
-            public void write (String message){
-                Log.d(TAG, "...Data to send: " + message + "...");
-                byte[] msgBuffer = message.getBytes();
-                try {
-                    mmOutStream.write(msgBuffer);
-                } catch (IOException e) {
-                    Log.d(TAG, "...Error data send: " + e.getMessage() + "...");
-                }
+        public void write (String message){
+            Log.d(TAG, "...Data to send: " + message + "...");
+            byte[] msgBuffer = message.getBytes();
+            try {
+                mmOutStream.write(msgBuffer);
+            } catch (IOException e) {
+                Log.d(TAG, "...Error data send: " + e.getMessage() + "...");
             }
+        }
 
 
     }
 }
-
