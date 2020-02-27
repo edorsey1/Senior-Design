@@ -8,15 +8,23 @@ process.env.DEBUG = 'dialogflow:*'; // enables lib debugging statements
 admin.initializeApp(functions.config().firebase);
 const db = admin.firestore();
 
-var instructionCount = 0;
-var ingredientCount = 0;
-var recipe;
+// Variables shared by multiple intents
+var instructionCount = 1;         // Number instruction user is currently on
+var ingredientCount = 1;          // Number ingredient user is currently on
+var recipe;                       // Name of recipe user is making
+var changeNum;                    // Number of instruction that user is changing
+
+// Variables for changing ingredient after instruction change
+var ingredFood;
+var ingredNum;
+var ingredWeight;
 
 exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, response) => {
   const agent = new WebhookClient({ request, response });
 
   // Assigns database variable depending on title of recipe
   // If no recipe is specified, assign it to default
+  /*
   try {
     const recipeTitle = agent.parameters.recipeTitle;
     if (recipeTitle == 'Peanut Butter Cups')
@@ -33,7 +41,9 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, resp
 
   if (recipe == null) {
     recipe = 'Test-123';
-  }
+  } */
+
+  recipe = 'demoRecipe';  // For testing purposes
 
   // Test function to write to database
   function writeToDb (agent) {
@@ -44,7 +54,7 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, resp
     // the document  {entry: "<value of database entry>"} in the 'agent' document
     const dialogflowAgentRef = db.collection('dialogflow').doc('agent');
     return db.runTransaction(t => {
-      t.set(dialogflowAgentRef, {entry: databaseEntry});
+      t.set(dialogflowAgentRef, {entry: databaseEntry}, {merge: true});
       return Promise.resolve('Write complete');
     }).then(doc => {
       agent.add(`Wrote "${databaseEntry}" to the Firestore database.`);
@@ -65,7 +75,7 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, resp
         if (!doc.exists) {
           agent.add('No data found in the database!');
         } else {
-          agent.add(doc.data().entry);
+          agent.add(entry);
         }
         return Promise.resolve('Read complete');
       }).catch(() => {
@@ -131,14 +141,16 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, resp
 
   // Intent to start instructions
   function instructionStart (agent) {
+
     const dialogflowAgentDoc = db.collection('recipes').doc(recipe);
+
     return dialogflowAgentDoc.get()
       .then(doc => {
         if (!doc.exists) {
           agent.add('No data for recipe found. Please try another recipe.');
         } else {
           agent.add('The first instruction is: ');
-          agent.add(doc.data().instruction[0]);
+          agent.add(doc.data().instruction.step1.procedure);
           instructionCount++;
           agent.add('Next?');
         }
@@ -150,14 +162,16 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, resp
 
   // Intent to start ingredients
   function ingredientStart (agent) {
+
     const dialogflowAgentDoc = db.collection('recipes').doc(recipe);
+
     return dialogflowAgentDoc.get()
       .then(doc => {
         if (!doc.exists) {
           agent.add('No data for recipe found. Please try another recipe.');
         } else {
           agent.add('The first ingredient is: ');
-          agent.add(doc.data().ingredient[0]);
+          agent.add(doc.data().ingredient.i1);
           ingredientCount++;
           agent.add('Next?');
         }
@@ -169,16 +183,18 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, resp
 
   // Intent to jump to a specific instruction
   function instructionJump (agent) {
+
     const stepNum = agent.parameters.stepNum;
     var num = 0;
     const dialogflowAgentDoc = db.collection('recipes').doc(recipe);
+
     return dialogflowAgentDoc.get()
       .then(doc => {
         if (!doc.exists) {
           agent.add('This recipe does not exist.. Please try another recipe.');
         }
         else {
-          var length = doc.data().instruction.length;
+          var length = doc.data().numbers.instructions;
 
           switch (stepNum) {
             case 'first':
@@ -215,20 +231,15 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, resp
               num = length;
               break;
             case 'next':
-              if (instructionCount == 0) {
-                num = 1;
-              }
-              else {
-                instructionCount++;
-                num = instructionCount;
-              }
+              instructionCount++;
+              num = instructionCount;
               break;
             case 'repeat':
               num = instructionCount;
               break;
             case 'back':
-              if (instructionCount == 0) {
-                num = 0;
+              if (instructionCount == 1) {
+                num = 1;
               }
               else {
                 instructionCount--;
@@ -239,17 +250,19 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, resp
 
           if (num > length) {
             agent.add('The recipe only has ' + length + ' instructions.');
-            agent.add('Please clarify which instruction you would like.');
+            agent.add('Please clarify which instruction you would like');
           }
           else if (num == 0)
           {
             agent.add("That is not a valid instruction. Please clarify which instruction you would like.");
           }
           else {
-            agent.add(doc.data().instruction[num-1]);
+            var key = 'step' + num;
+            agent.add(doc.data().instruction[key].procedure);
             instructionCount = num;
             agent.add('Next?');
           }
+
         }
         return Promise.resolve('Read complete');
       }).catch(() => {
@@ -259,16 +272,18 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, resp
 
   // Intent to jump to a specific ingredient
   function ingredientJump (agent) {
+
     const stepNum = agent.parameters.stepNum;
     var num = 0;
     const dialogflowAgentDoc = db.collection('recipes').doc(recipe);
+
     return dialogflowAgentDoc.get()
       .then(doc => {
         if (!doc.exists) {
           agent.add('This recipe does not exist. Please try another recipe.');
         }
         else {
-          var length = doc.data().ingredient.length;
+          var length = doc.data().numbers.ingredients;
 
           switch (stepNum) {
             case 'first':
@@ -305,20 +320,15 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, resp
               num = length;
               break;
             case 'next':
-              if (ingredientCount == 0) {
-                num = 1;
-              }
-              else {
-                ingredientCount++;
-                num = ingredientCount;
-              }
+              ingredientCount++;
+              num = ingredientCount;
               break;
             case 'repeat':
               num = ingredientCount;
               break;
             case 'back':
-              if (ingredientCount == 0) {
-                num = 0;
+              if (ingredientCount == 1) {
+                num = 1;
               }
               else {
                 ingredientCount--;
@@ -336,7 +346,8 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, resp
             agent.add("That is not a valid ingredient. Please clarify which ingredient you would like.");
           }
           else {
-            agent.add(doc.data().ingredient[num-1]);
+            var key = 'i' + num;
+            agent.add(doc.data().ingredient[key]);
             ingredientCount = num;
             agent.add('Next?');
           }
@@ -347,39 +358,394 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, resp
       });
   }
 
+  // Intent to edit the number of servings in a recipe
   function changeServe (agent) {
-    // Get parameter from Dialogflow with the string to add to the database
     const serveNum = agent.parameters.serveNum;
 
     const dialogflowAgentRef = db.collection('recipes').doc(recipe);
-    return db.runTransaction(t => {
-      t.update(dialogflowAgentRef, {servings: `${serveNum} servings`});
-      return Promise.resolve('Write complete');
-    }).then(doc => {
-      agent.add(`Changed recipe to make ${serveNum} servings.`);
-      agent.add('What would you like to do next?');
-    }).catch(err => {
-      console.log(`Error writing to Firestore: ${err}`);
-      agent.add(`Failed to change recipe to make ${serveNum} servings.`);
-      agent.add('What would you like to do next?');
-    });
+
+    if (serveNum) // Error checking to make sure that this parameter has a value
+    {
+      return db.runTransaction(t => {
+        t.update(dialogflowAgentRef, {servings: `${serveNum} servings`});
+        return Promise.resolve('Write complete');
+      }).then(doc => {
+        agent.add(`Changed recipe to make ${serveNum} servings.`);
+        agent.add('What would you like to do next?');
+      }).catch(err => {
+        console.log(`Error writing to Firestore: ${err}`);
+        agent.add(`Failed to change recipe to make ${serveNum} servings.`);
+        agent.add('What would you like to do next?');
+      });
+    }
+    else
+    {
+      agent.add("Please try again and specify the number of servings you would like to change this recipe to.");
+    }
   }
 
+  // Intent to change the time a recipe takes
   function changeTime (agent) {
-    // Get parameter from Dialogflow with the string to add to the database
     const recipeTime = agent.parameters.recipeTime;
 
     const dialogflowAgentRef = db.collection('recipes').doc(recipe);
+
+    if (recipeTime)
+    {
+      return db.runTransaction(t => {
+        t.update(dialogflowAgentRef, {time: recipeTime});
+        return Promise.resolve('Write complete');
+      }).then(doc => {
+        agent.add(`Changed recipe to take ${recipeTime}.`);
+        agent.add('What would you like to do next?');
+      }).catch(err => {
+        console.log(`Error writing to Firestore: ${err}`);
+        agent.add(`Failed to change recipe to take ${recipeTime}.`);
+        agent.add('What would you like to do next?');
+      });
+    }
+    else
+    {
+      agent.add("Please try again and specify the amount of time this recipe will take.");
+    }
+  }
+
+  // Intent to change ingredient
+  function changeIngredient (agent) {
+
+    const dialogflowAgentRef = db.collection('recipes').doc(recipe);
+
+    const stepNum = agent.parameters.stepNum;
+    const ingredientText = agent.parameters.any;
+    var num = 1;
+
+    if (stepNum && ingredientText)
+    {
+      switch (stepNum) {
+        case 'first':
+          num = 1;
+          break;
+        case 'second':
+          num = 2;
+          break;
+        case 'third':
+          num = 3;
+          break;
+        case 'fourth':
+          num = 4;
+          break;
+        case 'fifth':
+          num = 5;
+          break;
+        case 'sixth':
+          num = 6;
+          break;
+        case 'seventh':
+          num = 7;
+          break;
+        case 'eighth':
+          num = 8;
+          break;
+        case 'ninth':
+          num = 9;
+          break;
+        case 'tenth':
+          num = 10;
+          break;
+      }
+
+      var key = ('ingredient.i' + num);
+
+      return db.runTransaction(t => {
+        t.update(dialogflowAgentRef, {[key]: ingredientText});
+        return Promise.resolve('Write complete');
+      }).then(doc => {
+        agent.add(`Changed ${stepNum} ingredient to ${ingredientText}.`);
+        agent.add('What would you like to do next?');
+      }).catch(err => {
+        console.log(`Error writing to Firestore: ${err}`);
+        agent.add(`Failed to change the ${stepNum} ingredient.`);
+        agent.add('What would you like to do next?');
+      });
+    }
+    else
+    {
+      agent.add("Please try again and specify the number of the ingredient you would like to change and what to change it to.");
+    }
+  }
+
+  // Intent to launch instruction changing procedure
+  function changeInstruction (agent) {
+
+    const dialogflowAgentDoc = db.collection('recipes').doc(recipe);
+
+    const stepNum = agent.parameters.stepNum;
+
+    if (stepNum)
+    {
+      switch (stepNum) {
+        case 'first':
+          changeNum = 1;
+          break;
+        case 'second':
+          changeNum = 2;
+          break;
+        case 'third':
+          changeNum = 3;
+          break;
+        case 'fourth':
+          changeNum = 4;
+          break;
+        case 'fifth':
+          changeNum = 5;
+          break;
+        case 'sixth':
+          changeNum = 6;
+          break;
+        case 'seventh':
+          changeNum = 7;
+          break;
+        case 'eighth':
+          changeNum = 8;
+          break;
+        case 'ninth':
+          changeNum = 9;
+          break;
+        case 'tenth':
+          changeNum = 10;
+          break;
+      }
+
+    if (changeNum){
+      return dialogflowAgentDoc.get()
+        .then(doc => {
+          if (!doc.exists) {
+            agent.add('No data for recipe found. Please try another recipe.');
+          } else {
+            agent.add(`Changing instruction ${changeNum}:`);
+            agent.add('Please say "Ingredient is" followed by the ingredient. Say "Ingredient is none" if this instruction does not have an ingredient or "Ingredient is same" if you do not want the ingredient to change.');
+          }
+          return Promise.resolve('Read complete');
+        }).catch(() => {
+          agent.add('No data for recipe found. Please try another recipe.');
+        });
+    }
+    else
+    {
+      agent.add('Please try again and specify the instruction you would like to make edits to.');
+    }
+  }
+}
+
+  // Function to change the ingredient field in the instruction
+  function changeInstructionIngredient (agent) {
+
+    const dialogflowAgentRef = db.collection('recipes').doc(recipe);
+    const ingredientText = agent.parameters.any;
+    var keyI = ('instruction.step' + changeNum + '.ingredient');
+    var keyN = ('instruction.step' + changeNum + '.number');
+
+    switch (ingredientText) {
+      case 'none':
+        return db.runTransaction(t => {
+          t.update(dialogflowAgentRef, {[keyI]: '', [keyN]: 0});
+          ingredFood = '';
+          ingredNum = 0;
+          return Promise.resolve('Write complete');
+        }).then(doc => {
+          agent.add('Ingredient cleared.');
+          agent.add('What is the procedure for this instruction? Please say "Procedure is" followed by the instruction procedure.');
+        }).catch(err => {
+          console.log(`Error writing to Firestore: ${err}`);
+          agent.add(`Failed to clear the ingredient in step ${changeNum}.`);
+          agent.add('Please try again.');
+        });
+
+      case 'same':
+        return dialogflowAgentRef.get()
+          .then(doc => {
+            if (!doc.exists) {
+              agent.add('This recipe cannot be found. Please try again.');
+            } else {
+              var key = ('step' + changeNum);
+              ingredFood = doc.data().instruction[key].ingredient;
+              ingredNum = doc.data().instruction[key].number;
+              agent.add('Ingredient not changed.');
+              agent.add('What is the procedure for this instruction? Please say "Procedure is" followed by the instruction procedure.');
+            }
+            return Promise.resolve('Read complete');
+          }).catch(() => {
+            agent.add('There was an error updating this instruction.');
+            agent.add('Please try again.');
+          });
+        break;
+
+      default:
+        return db.runTransaction(t => {
+          t.update(dialogflowAgentRef, {[keyI]: ingredientText});
+          ingredFood = ingredientText;
+          return Promise.resolve('Write complete');
+        }).then(doc => {
+          agent.add(`Changed ingredient to "${ingredientText}"".`);
+          agent.add('What number ingredient does this instruction correspond to? Please say "Number is" followed by the number. Please say "Number is new" if this is a new ingredient.');
+        }).catch(err => {
+          console.log(`Error writing to Firestore: ${err}`);
+          agent.add(`Failed to change the ingredient in step ${changeNum}.`);
+          agent.add('Please try again.');
+        });
+      }
+  }
+
+  // Function to change the number of ingredient that the instruction corresponds to by changing the number field of step
+  function changeInstructionNumber (agent) {
+
+    const dialogflowAgentRef = db.collection('recipes').doc(recipe);
+    //const valueNum = agent.parameters.any;
+    const ingredientNum = agent.parameters.number;
+    var keyN = ('instruction.step' + changeNum + '.number');
+
     return db.runTransaction(t => {
-      t.update(dialogflowAgentRef, {time: recipeTime});
+      t.update(dialogflowAgentRef, {[keyN]: ingredientNum});
+      ingredNum = ingredientNum;
       return Promise.resolve('Write complete');
     }).then(doc => {
-      agent.add(`Changed recipe to take ${recipeTime}.`);
+      agent.add(`Changed number to "${ingredientNum}".`);
+      agent.add('What is the procedure for this instruction? Please say "Procedure is" followed by the instruction procedure.');
+    }).catch(err => {
+      console.log(`Error writing to Firestore: ${err}`);
+      agent.add(`Failed to change the ingredient number in step ${changeNum}.`);
+      agent.add('Please try again.');
+    });
+
+    // For new just have them specify the last number ? IE 4 if there are 3 ingredients
+    // Add in error checking to make sure they don't reference a massively large number???
+    // How to update ingredient once instruction updating is complete?
+
+    /*
+    if (valueNum == 'new') {
+      var length = doc.data().numbers.ingredients;
+      var keyL = 'numbers.ingredients';
+      var num = length + 1;
+
+      return db.runTransaction(t => {
+        t.update(dialogflowAgentRef, {[keyN]: num, [keyL]: num});
+        return Promise.resolve('Write complete');
+      }).then(doc => {
+        agent.add(`Added new ingredient as  ${ingredientNum}.`);
+        agent.add('What is the procedure for this instruction? Please say "Procedure is" followed by the instruction procedure.');
+      }).catch(err => {
+        console.log(`Error writing to Firestore: ${err}`);
+        agent.add(`Failed to set the ingredient number in step ${changeNum}.`);
+        agent.add('Please try again.');
+      });
+    }
+    else {
+    } */
+  }
+
+  // Function to change the procedure field in the instruction
+  function changeInstructionProcedure (agent) {
+
+    const dialogflowAgentRef = db.collection('recipes').doc(recipe);
+    const procedureText = agent.parameters.any;
+    var keyP = ('instruction.step' + changeNum + '.procedure');
+
+    if (procedureText == 'same') {
+      agent.add('Procedure is not changed.');
+      agent.add('What is the weight of the ingredient to be added in this procedure? Please say "Weight is" followed by the weight. Please say "Weight is none" if there is no weight involved in this procedure.');
+    }
+    else {
+      return db.runTransaction(t => {
+        t.update(dialogflowAgentRef, {[keyP]: procedureText});
+        return Promise.resolve('Write complete');
+      }).then(doc => {
+        agent.add(`Changed procedure to "${procedureText}".`);
+        agent.add('What is the weight of the ingredient to be added in this procedure? Please say "Weight is" followed by the numerical value of the weight. Please say "Weight is none" if there is no weight involved in this procedure, or "Weight is same" if you do not want to change it.');
+      }).catch(err => {
+        console.log(`Error writing to Firestore: ${err}`);
+        agent.add(`Failed to change the procedure in step ${changeNum}.`);
+        agent.add('Please try again.');
+      });
+    }
+  }
+
+  // Function to change the weight field in the instruction
+  function changeInstructionWeight (agent) {
+
+    const dialogflowAgentRef = db.collection('recipes').doc(recipe);
+    const weightNum = agent.parameters.number;
+    const weightText = agent.parameters.changeValue;
+    var keyW = ('instruction.step' + changeNum + '.weight');
+    var keyU = ('instruction.step' + changeNum + '.unit');
+
+    switch (weightText) {
+      case 'none':
+        return db.runTransaction(t => {
+          t.update(dialogflowAgentRef, {[keyW]: '', [keyU]: ''});
+          ingredWeight = '';
+          return Promise.resolve('Write complete');
+        }).then(doc => {
+          agent.add('Weight cleared.');
+          agent.add('Instruction change completed. If you would like to update the ingredient that corresponds to this instruction, please say "Update ingredient."');
+        }).catch(err => {
+          console.log(`Error writing to Firestore: ${err}`);
+          agent.add(`Failed to clear the weight in step ${changeNum}.`);
+          agent.add('Please try again.');
+        });
+
+      case 'same':
+        return dialogflowAgentRef.get()
+          .then(doc => {
+            if (!doc.exists) {
+              agent.add('This recipe cannot be found. Please try again.');
+            } else {
+              var key = ('step' + changeNum);
+              ingredWeight = doc.data().instruction[key].weight;
+              agent.add('Weight not changed.');
+              agent.add('Instruction change completed. If you would like to update the ingredient that corresponds to this instruction, please say "Update ingredient."');
+            }
+            return Promise.resolve('Read complete');
+          }).catch(() => {
+            agent.add('There was an error updating this instruction.');
+            agent.add('Please try again.');
+          });
+
+        break;
+
+      default:
+        return db.runTransaction(t => {
+          t.update(dialogflowAgentRef, {[keyW]: weightNum, [keyU]: 'g'});
+          ingredWeight = weightNum;
+          return Promise.resolve('Write complete');
+        }).then(doc => {
+          agent.add(`Changed weight to "${weightNum}".`);
+          agent.add('Instruction change completed. If you would like to update the ingredient that corresponds to this instruction, please say "Update ingredient."');
+        }).catch(err => {
+          console.log(`Error writing to Firestore: ${err}`);
+          agent.add(`Failed to change the weight in step ${changeNum}.`);
+          agent.add('Please try again.');
+        });
+      }
+  }
+
+  // Function to update ingredient corresponding to instruction after instruction change
+  function changeInstructionUpdate (agent) {
+
+    const dialogflowAgentRef = db.collection('recipes').doc(recipe);
+
+    var key = ('ingredient.i' + ingredNum);
+    var text = (ingredWeight + ' g of ' + ingredFood);
+
+    return db.runTransaction(t => {
+      t.update(dialogflowAgentRef, {[key]: text});
+      return Promise.resolve('Write complete');
+    }).then(doc => {
+      agent.add(`Updated ingredient to "${text}".`);
       agent.add('What would you like to do next?');
     }).catch(err => {
       console.log(`Error writing to Firestore: ${err}`);
-      agent.add(`Failed to change recipe to take ${recipeTime}.`);
-      agent.add('What would you like to do next?');
+      agent.add(`Failed to update the ingredient corresponding to instruction ${changeNum}.`);
+      agent.add('Please try again.');
     });
   }
 
@@ -396,5 +762,12 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, resp
   intentMap.set('ingredientJump', ingredientJump);
   intentMap.set('changeServe', changeServe);
   intentMap.set('changeTime', changeTime);
+  intentMap.set('changeIngredient', changeIngredient);
+  intentMap.set('changeInstruction', changeInstruction);
+  intentMap.set('changeInstruction - Ingredient', changeInstructionIngredient);
+  intentMap.set('changeInstruction - Number', changeInstructionNumber);
+  intentMap.set('changeInstruction - Procedure', changeInstructionProcedure);
+  intentMap.set('changeInstruction - Weight', changeInstructionWeight);
+  intentMap.set('changeInstruction - Update', changeInstructionUpdate);
   agent.handleRequest(intentMap);
 });
