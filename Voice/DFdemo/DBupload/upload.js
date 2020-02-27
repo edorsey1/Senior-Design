@@ -13,6 +13,8 @@ var instructionCount = 1;         // Number instruction user is currently on
 var ingredientCount = 1;          // Number ingredient user is currently on
 var recipe;                       // Name of recipe user is making
 var changeNum;                    // Number of instruction that user is changing
+var ingredientLength;             // Number of ingredients in recipe
+var instructionLength;            // Number of instructions in recipe
 
 // Variables for changing ingredient after instruction change
 var ingredFood;
@@ -24,7 +26,7 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, resp
 
   // Assigns database variable depending on title of recipe
   // If no recipe is specified, assign it to default
-  /*
+
   try {
     const recipeTitle = agent.parameters.recipeTitle;
     if (recipeTitle == 'Peanut Butter Cups')
@@ -41,9 +43,9 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, resp
 
   if (recipe == null) {
     recipe = 'Test-123';
-  } */
+  }
 
-  recipe = 'demoRecipe';  // For testing purposes
+  //recipe = 'demoRecipe';  // For testing purposes
 
   // Test function to write to database
   function writeToDb (agent) {
@@ -194,7 +196,7 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, resp
           agent.add('This recipe does not exist.. Please try another recipe.');
         }
         else {
-          var length = doc.data().numbers.instructions;
+          instructionLength = doc.data().numbers.instructions;
 
           switch (stepNum) {
             case 'first':
@@ -228,7 +230,7 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, resp
               num = 10;
               break;
             case 'last':
-              num = length;
+              num = instructionLength;
               break;
             case 'next':
               instructionCount++;
@@ -248,8 +250,8 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, resp
               break;
           }
 
-          if (num > length) {
-            agent.add('The recipe only has ' + length + ' instructions.');
+          if (num > instructionLength) {
+            agent.add('The recipe only has ' + instructionLength + ' instructions.');
             agent.add('Please clarify which instruction you would like');
           }
           else if (num == 0)
@@ -283,7 +285,7 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, resp
           agent.add('This recipe does not exist. Please try another recipe.');
         }
         else {
-          var length = doc.data().numbers.ingredients;
+          ingredientLength = doc.data().numbers.ingredients;
 
           switch (stepNum) {
             case 'first':
@@ -317,7 +319,7 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, resp
               num = 10;
               break;
             case 'last':
-              num = length;
+              num = ingredientLength;
               break;
             case 'next':
               ingredientCount++;
@@ -337,8 +339,8 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, resp
               break;
           }
 
-          if (num > length) {
-            agent.add('The recipe only has ' + length + ' ingredients.');
+          if (num > ingredientLength) {
+            agent.add('The recipe only has ' + ingredientLength + ' ingredients.');
             agent.add('Please clarify which ingredient you would like');
           }
           else if (num == 0)
@@ -587,7 +589,8 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, resp
           return Promise.resolve('Write complete');
         }).then(doc => {
           agent.add(`Changed ingredient to "${ingredientText}"".`);
-          agent.add('What number ingredient does this instruction correspond to? Please say "Number is" followed by the number. Please say "Number is new" if this is a new ingredient.');
+          agent.add('What number ingredient does this instruction correspond to? Please say "Number is" followed by the number.');
+          // Please say "Number is new" if this is a new ingredient. You can say "Number is same" if this number has not changed.
         }).catch(err => {
           console.log(`Error writing to Firestore: ${err}`);
           agent.add(`Failed to change the ingredient in step ${changeNum}.`);
@@ -709,8 +712,6 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, resp
             agent.add('There was an error updating this instruction.');
             agent.add('Please try again.');
           });
-
-        break;
 
       default:
         return db.runTransaction(t => {
