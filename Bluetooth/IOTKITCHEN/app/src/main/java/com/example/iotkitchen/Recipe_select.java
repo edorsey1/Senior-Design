@@ -21,7 +21,9 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 //
 //
@@ -30,42 +32,15 @@ import java.util.List;
 public class Recipe_select extends AppCompatActivity {
 
 
-    /*For Bottom Navigation Fragment
-    @Nullable
-    //@Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState)
-    {
-        return inflater.inflate(R.layout.activity_recipe_select, container, false);
-    }
-
-
-    //End of Bottom navigation layout
-
-     */
-/*For Activity
-    @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
-        super.onCreate(savedInstanceState);
-        setContentView(r.layout.activity_recipe_select);
-
-    }
-*/
-
-
-
-
     FirebaseFirestore mDatabase= FirebaseFirestore.getInstance();
-    Button start;
     private ListView listView;
     private static final String TAG = "MainActivity";
-    ArrayAdapter<String> adapter;
+    ArrayAdapter<Map<String,String>> adapter;
     List<String> list;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-        //Navigation
-/*
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recipe_select);
 
@@ -94,6 +69,7 @@ public class Recipe_select extends AppCompatActivity {
                         overridePendingTransition(0, 0);
                         return true;
 
+<<<<<<< Updated upstream
                     case R.id.nav_Recipe: //recipe
                         return true;
                 }
@@ -130,6 +106,11 @@ public class Recipe_select extends AppCompatActivity {
                     case R.id.nav_home:
                         startActivity(new Intent(getApplicationContext()
                                 , MainActivity.class));
+=======
+                    case R.id.nav_out:
+                        startActivity(new Intent(getApplicationContext()
+                                , SignOut.class));
+>>>>>>> Stashed changes
                         overridePendingTransition(0, 0);
                         return true;
 
@@ -140,25 +121,11 @@ public class Recipe_select extends AppCompatActivity {
             }
         });
         //
-        listView=(ListView)findViewById(R.id.database);
-        mDatabase.collection("recipes").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if (task.isSuccessful()) {
-                    list = new ArrayList<>();
-                    for (QueryDocumentSnapshot document : task.getResult()) {
-                        list.add(document.getId());
-                    }
-                    Log.d(TAG, list.toString());
+        listView=findViewById(R.id.database);
+        //ArrayList<Map<String,String>> test = DatabaseMaster.databaseMaster.GetPublicRecipes();
+        //adapter=new ArrayAdapter<>(Recipe_select.this, android.R.layout.simple_list_item_1, test);
+        //listView.setAdapter(adapter);
 
-                    adapter=new ArrayAdapter<String>(Recipe_select.this, android.R.layout.simple_list_item_1, list);
-                    listView.setAdapter(adapter);
-                } else {
-                    Log.d(TAG, "Error getting documents: ", task.getException());
-                }
-            }
-
-        });
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -168,10 +135,5 @@ public class Recipe_select extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-
-
-
-
     }
-
 }

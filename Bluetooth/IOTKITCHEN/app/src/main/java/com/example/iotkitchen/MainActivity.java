@@ -1,26 +1,15 @@
 package com.example.iotkitchen;
 
 
-import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
-import android.bluetooth.BluetoothSocket;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
-import android.util.Log;
 import android.view.MenuItem;
-import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.android.gms.auth.api.signin.GoogleSignInClient;
-import com.google.android.material.bottomnavigation.BottomNavigationItemView;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.firebase.auth.FirebaseAuth;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -28,6 +17,7 @@ import java.io.OutputStream;
 import java.lang.reflect.Method;
 import java.util.UUID;
 
+<<<<<<< Updated upstream
 import static androidx.constraintlayout.widget.Constraints.TAG;
 
 
@@ -56,14 +46,24 @@ public class MainActivity extends AppCompatActivity {
 
     ///////////////////////////////////////
 
+=======
+public class MainActivity extends AppCompatActivity {
+
+    TextView welcomeText;
+
+>>>>>>> Stashed changes
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         //Sets the display for the screen of the activity
         setContentView(R.layout.activity_main);
+<<<<<<< Updated upstream
 
 
+=======
+        welcomeText = (TextView) findViewById(R.id.welcomeText);
+>>>>>>> Stashed changes
         //Init and Assign Variables
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
 
@@ -97,6 +97,7 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
+<<<<<<< Updated upstream
         /////////////////////////////////////////////////////////////////////
         txtArduino = (TextView) findViewById(R.id.txtArduino);    // for display the received data from the Arduino
         TextView text = (TextView) findViewById(R.id.bluet);
@@ -153,11 +154,21 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         return  device.createRfcommSocketToServiceRecord(MY_UUID);
+=======
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        // Check if user is signed in (non-null) and update UI accordingly.
+        CheckUser();
+>>>>>>> Stashed changes
     }
 
     @Override
     public void onResume() {
         super.onResume();
+<<<<<<< Updated upstream
 
         Log.d(TAG, "...onResume - try connect...");
 
@@ -259,6 +270,21 @@ public class MainActivity extends AppCompatActivity {
             mmInStream = tmpIn;
             mmOutStream = tmpOut;
         }
+=======
+        // Check if user is signed in (non-null) and update UI accordingly.
+        CheckUser();
+    }
+
+    private void CheckUser() {
+        if (UserData.userData.user == null) {
+            startActivity(new Intent(MainActivity.this, LoginActivity.class));
+        }
+        else {
+            welcomeText.setText("Welcome " + UserData.userData.userName);
+        }
+    }
+}
+>>>>>>> Stashed changes
 
         public void run() {
             byte[] buffer = new byte[256];  // buffer store for the stream
