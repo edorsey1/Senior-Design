@@ -1,8 +1,6 @@
 package com.example.iotkitchen;
 
-import android.provider.ContactsContract;
 import android.util.Log;
-import android.widget.ArrayAdapter;
 
 import androidx.annotation.NonNull;
 
@@ -16,13 +14,8 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.SetOptions;
 
 
-import java.io.IOException;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-
-import static java.lang.Thread.sleep;
+import java.util.HashMap;;
 
 public class DatabaseMaster {
     private FirebaseFirestore db = FirebaseFirestore.getInstance();

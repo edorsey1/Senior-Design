@@ -9,7 +9,7 @@
     <ListView
         android:id="@+id/database"
         android:layout_width="match_parent"
-        android:layout_height="521dp" />
+        android:layout_height="wrap_content" />
 
     <Button
         android:id="@+id/start"
