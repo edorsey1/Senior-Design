@@ -63,7 +63,7 @@ public class DatabaseMaster {
                             publicRecipes.add(document.toObject(RecipeModel.class));
                             running = false;
                         } catch (Exception e) {
-
+                            Exception temp = e;
                         }
                     }
                 } else {

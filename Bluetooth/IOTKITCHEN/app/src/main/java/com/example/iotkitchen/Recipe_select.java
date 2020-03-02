@@ -12,6 +12,8 @@ import android.widget.ListView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -29,13 +31,14 @@ import java.util.Map;
 //
 
 
-public class Recipe_select extends AppCompatActivity {
+public class Recipe_select extends AppCompatActivity implements RecipeListAdapter.RecipeSelect {
 
 
     FirebaseFirestore mDatabase= FirebaseFirestore.getInstance();
-    private ListView listView;
+    private RecyclerView recyclerView;
+    private RecyclerView.LayoutManager layoutManager;
     private static final String TAG = "MainActivity";
-    ArrayAdapter<Map<String,String>> adapter;
+    RecipeListAdapter adapter;
     List<String> list;
 
     @Override
@@ -69,48 +72,9 @@ public class Recipe_select extends AppCompatActivity {
                         overridePendingTransition(0, 0);
                         return true;
 
-<<<<<<< Updated upstream
-                    case R.id.nav_Recipe: //recipe
-                        return true;
-                }
-                return false;
-            }
-        });
-        */
-
-        //Navigation
-
-        super.onCreate(savedInstanceState);
-        //setContentView(R.layout.activity_recipe_select);
-        setContentView(R.layout.activity_recipe_select);
-
-        //Init and Assign Variables
-        BottomNavigationView bottomNavigationView =  findViewById(R.id.bottom_navigation);
-        //
-        //setContentView(R.layout.activity_recipe_select);
-        bottomNavigationView.setSelectedItemId(R.id.nav_Recipe);
-
-        //Perform
-        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-                //BottomNavigationView.setOnNavigationItemSelectedListener();
-                switch (menuItem.getItemId()) {
-
-                    case R.id.nav_Scale: //scale
-                        startActivity(new Intent(getApplicationContext()
-                                , Database.class));
-                        overridePendingTransition(0, 0);
-                        return true;
-
-                    case R.id.nav_home:
-                        startActivity(new Intent(getApplicationContext()
-                                , MainActivity.class));
-=======
                     case R.id.nav_out:
                         startActivity(new Intent(getApplicationContext()
                                 , SignOut.class));
->>>>>>> Stashed changes
                         overridePendingTransition(0, 0);
                         return true;
 
@@ -120,20 +84,20 @@ public class Recipe_select extends AppCompatActivity {
                 return false;
             }
         });
-        //
-        listView=findViewById(R.id.database);
-        //ArrayList<Map<String,String>> test = DatabaseMaster.databaseMaster.GetPublicRecipes();
-        //adapter=new ArrayAdapter<>(Recipe_select.this, android.R.layout.simple_list_item_1, test);
-        //listView.setAdapter(adapter);
 
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String templistview= list.get(position).toString();
-                Intent intent = new Intent(Recipe_select.this, ingredient.class);
-                intent.putExtra("Listviewclickvalue",templistview);
-                startActivity(intent);
-            }
-        });
+        recyclerView=findViewById(R.id.database);
+        layoutManager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(layoutManager);
+
+        ArrayList<RecipeModel> test = DatabaseMaster.databaseMaster.GetPublicRecipes();
+        adapter=new RecipeListAdapter(test, this);
+        recyclerView.setAdapter(adapter);
+    }
+
+    @Override
+    public void onRecipeSelect(int position) {
+        Intent intent = new Intent(Recipe_select.this, ingredient.class);
+        intent.putExtra("IndexClicked",position);
+        startActivity(intent);
     }
 }

@@ -19,11 +19,13 @@
             android:paddingLeft="16dp"
             android:paddingRight="16dp">
 
-            <ListView
+            <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/database"
                 android:layout_width="match_parent"
-                android:layout_height="521dp"
-                android:divider="?attr/editTextBackground" />
+                android:layout_height="match_parent"
+                android:clickable="true"
+                android:clipToPadding="false"
+                android:scrollbars="vertical" />
 
 
         </LinearLayout>

@@ -1,9 +1,6 @@
 package com.example.iotkitchen;
 
-<<<<<<< Updated upstream
 import androidx.appcompat.app.AppCompatActivity;
-=======
-import  androidx.appcompat.app.AppCompatActivity;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -21,7 +18,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
->>>>>>> Stashed changes
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -31,10 +27,6 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-<<<<<<< Updated upstream
-=======
-import com.google.firebase.firestore.SetOptions;
->>>>>>> Stashed changes
 
 import java.io.IOException;
 import java.io.InputStream;

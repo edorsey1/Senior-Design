@@ -31,14 +31,14 @@ public class ingredient extends AppCompatActivity {
     ArrayAdapter<String> adapter;
     List<String> list;
     DocumentReference docref;
-    String tempholder;
+    int tempholder;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ingredient);
 
         start=(Button)findViewById(R.id.start);
-         tempholder=getIntent().getStringExtra("Listviewclickvalue");
+        tempholder=getIntent().getIntExtra("IndexClicked");
 
         listView=(ListView)findViewById(R.id.database);
         docref=mDatabase.collection("recipes").document(""+tempholder+"");
