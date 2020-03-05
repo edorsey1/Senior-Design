@@ -15,6 +15,7 @@ import com.google.firebase.firestore.SetOptions;
 
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;;
 
 public class DatabaseMaster {
@@ -53,6 +54,9 @@ public class DatabaseMaster {
                     publicRecipes = new ArrayList<>();
                     for (QueryDocumentSnapshot document : task.getResult()) {
                         try {
+                            RecipeModel temp = new RecipeModel();
+                            temp = document.toObject(RecipeModel.class);
+                            temp.setReference(document.getReference());
                             publicRecipes.add(document.toObject(RecipeModel.class));
                             running = false;
                         } catch (Exception e) {
@@ -73,5 +77,10 @@ public class DatabaseMaster {
 
     public static void LoggedOut() {
         databaseMaster  = new DatabaseMaster();
+    }
+
+    public void SaveData(RecipeData data) {
+        userRef.collection("CookingSessions").document("1")
+                .set(data, SetOptions.merge());
     }
 }

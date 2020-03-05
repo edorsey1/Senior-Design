@@ -3,18 +3,14 @@ package com.example.iotkitchen;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
@@ -36,6 +32,8 @@ public class Database extends AppCompatActivity {
     Step activeStep;
     int index;
     String tempText;
+
+    private static CurrentRecipe currentRecipe;
 
     //this is bluetooth
     TextView txtArduino;
@@ -62,47 +60,6 @@ public class Database extends AppCompatActivity {
         //Navigation
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_database);
-
-        //Init and Assign Variables
-        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
-
-        //Set Home
-        //BottomNavigationView.setSelectedItemId(R.id.Database)
-        bottomNavigationView.setSelectedItemId(R.id.nav_Scale);
-
-        //Perform
-        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-                //BottomNavigationView.setOnNavigationItemSelectedListener();
-                switch (menuItem.getItemId()) {
-
-                    case R.id.nav_Scale: //scale
-
-                        return true;
-
-                    case R.id.nav_home:
-                        startActivity(new Intent(getApplicationContext()
-                                , MainActivity.class));
-                        overridePendingTransition(0, 0);
-                        return true;
-
-                    case R.id.nav_out:
-                        startActivity(new Intent(getApplicationContext()
-                                , SignOut.class));
-                        overridePendingTransition(0, 0);
-                        return true;
-
-                    case R.id.nav_Recipe: //recipe
-                        startActivity(new Intent(getApplicationContext()
-                                , Recipe_select.class));
-                        overridePendingTransition(0, 0);
-                        return true;
-                }
-                return false;
-            }
-        });
-
 
         //
         a = (TextView) findViewById(R.id.Ingredient_view);
@@ -146,34 +103,101 @@ public class Database extends AppCompatActivity {
         btAdapter = BluetoothAdapter.getDefaultAdapter();        // get Bluetooth adapter
         //  checkBTState();
 
-        index = getIntent().getIntExtra("IndexClicked",2);
-        recipe = DatabaseMaster.databaseMaster.GetPublicRecipes().get(index);
-        instructions = recipe.getInstructions();
-        size = instructions.size();
-        activeStep = instructions.get(i);
+        index = getIntent().getIntExtra("IndexClicked", -1);
+        if (index == -1 && currentRecipe == null) {
+            finish();
+        }
+        else if (currentRecipe != null && index == -1) {
+            recipe = currentRecipe.getCurrentRecipe();
+            i = currentRecipe.getStepNum();
+            instructions = recipe.getInstructions();
+            SetStep();
+        }
+        else {
+            recipe = DatabaseMaster.databaseMaster.GetPublicRecipes().get(index);
+            if (currentRecipe == null) {
+                currentRecipe = new CurrentRecipe(recipe);
+                instructions = recipe.getInstructions();
+                if (instructions != null) {
+                    size = instructions.size();
+                    activeStep = instructions.get(i);
 
-        SetStep();
+                    SetStep();
+                }
+            } else if (recipe.getTitle() != currentRecipe.getCurrentRecipe().getTitle()) {
+                currentRecipe = new CurrentRecipe(DatabaseMaster.databaseMaster.GetPublicRecipes().get(index));
+                instructions = recipe.getInstructions();
+                if (instructions != null) {
+                    size = instructions.size();
+                    activeStep = instructions.get(i);
 
+                    SetStep();
+                }
+            } else if (i != currentRecipe.getStepNum()) {
+                i = currentRecipe.getStepNum();
+                SetStep();
+            }
+        }
 
         next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (i < size) {
+                if (i + 1 < size) {
                     i = i + 1;
                     SetStep();
                 }
-
-
+                else if (i == size-1) {
+                    DatabaseMaster.databaseMaster.SaveData(currentRecipe.getRecipeData());
+                }
             }
         });
         previous.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (i > 1) {
+                if (i >= 1) {
                     i = i - 1;
                     SetStep();
                 }
+            }
+        });
 
+        //Init and Assign Variables
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
+
+        //Set Home
+        //BottomNavigationView.setSelectedItemId(R.id.Database)
+        bottomNavigationView.setSelectedItemId(R.id.nav_Scale);
+
+        //Perform
+        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+                //BottomNavigationView.setOnNavigationItemSelectedListener();
+                switch (menuItem.getItemId()) {
+
+                    case R.id.nav_Scale: //scale
+
+                        return true;
+
+                    case R.id.nav_home:
+                        startActivity(new Intent(getApplicationContext()
+                                , MainActivity.class));
+                        overridePendingTransition(0, 0);
+                        return true;
+
+                    case R.id.nav_out:
+                        startActivity(new Intent(getApplicationContext()
+                                , SignOut.class));
+                        overridePendingTransition(0, 0);
+                        return true;
+
+                    case R.id.nav_Recipe: //recipe
+                        startActivity(new Intent(getApplicationContext()
+                                , Recipe_select.class));
+                        overridePendingTransition(0, 0);
+                        return true;
+                }
+                return false;
             }
         });
     }
@@ -191,7 +215,17 @@ public class Database extends AppCompatActivity {
     @Override
     public void onResume () {
         super.onResume();
-        SetStep();
+        if (instructions != null) {
+            SetStep();
+        }
+    }
+
+    @Override
+    public void onPause () {
+        super.onPause();
+        if (currentRecipe != null) {
+            currentRecipe.setStepNum(i);
+        }
     }
 
     /*
