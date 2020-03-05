@@ -6,11 +6,102 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <FrameLayout
-        android:id="@+id/container"
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/bottom_navigation"/>
+        android:layout_above="@id/bottom_navigation">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp">
+
+
+            <TextView
+                android:id="@+id/step"
+                android:layout_width="match_parent"
+                android:layout_height="34dp"
+                android:text="step" />
+
+            <EditText
+                android:id="@+id/Ingredient"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="textPersonName"
+                android:text="Ingredient" />
+
+            <TextView
+                android:id="@+id/Ingredient_view"
+                android:layout_width="match_parent"
+                android:layout_height="39dp"
+                android:text="" />
+
+            <EditText
+                android:id="@+id/procedure"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="textPersonName"
+                android:text="procedure" />
+
+            <TextView
+                android:id="@+id/procedure_view"
+                android:layout_width="match_parent"
+                android:layout_height="41dp"
+                android:text="" />
+
+            <EditText
+                android:id="@+id/unit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="textPersonName"
+                android:text="unit" />
+
+            <TextView
+                android:id="@+id/unit_view"
+                android:layout_width="match_parent"
+                android:layout_height="42dp"
+                android:text="" />
+
+            <EditText
+                android:id="@+id/weight"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="none"
+                android:text="weight" />
+
+            <TextView
+                android:id="@+id/weight_view"
+                android:layout_width="match_parent"
+                android:layout_height="54dp"
+                android:text="" />
+
+            <TextView
+                android:id="@+id/txtArduino"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:text="TextView" />
+
+            <Button
+                android:id="@+id/next"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="next" />
+
+            <Button
+                android:id="@+id/previous"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="previous" />
+
+
+        </LinearLayout>
+    </ScrollView>
 
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
@@ -18,103 +109,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
+        app:itemIconTint="@color/cardview_light_background"
         app:itemTextColor="@color/cardview_light_background"
-        app:itemIconTint="@color/colorAccent"
-        app:menu="@menu/bottom_navigation"/>
+        app:menu="@menu/bottom_navigation" />
 
     //back to linear layout
 
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp"
-        android:orientation="vertical" >
-
-
-        <TextView
-            android:id="@+id/step"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ems="6"
-            android:text="STEP" />
-
-        <EditText
-            android:id="@+id/Ingredient"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:inputType="textPersonName"
-            android:text="INGREDIENT" />
-
-        <TextView
-            android:id="@+id/Ingredient_view"
-            android:layout_width="match_parent"
-            android:layout_height="39dp"
-            android:text="" />
-
-        <EditText
-            android:id="@+id/procedure"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:inputType="textPersonName"
-            android:text="PROCEDURE" />
-
-        <TextView
-            android:id="@+id/procedure_view"
-            android:layout_width="match_parent"
-            android:layout_height="41dp"
-            android:text="" />
-
-        <EditText
-            android:id="@+id/unit"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:inputType="textPersonName"
-            android:text="UNIT" />
-
-        <TextView
-            android:id="@+id/unit_view"
-            android:layout_width="match_parent"
-            android:layout_height="42dp"
-            android:text="" />
-
-        <EditText
-            android:id="@+id/weight"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:inputType="none"
-            android:text="WEIGHT" />
-
-        <TextView
-            android:id="@+id/weight_view"
-            android:layout_width="match_parent"
-            android:layout_height="54dp"
-            android:text="" />
-
-        <TextView
-            android:id="@+id/txtArduino"
-            android:layout_width="match_parent"
-            android:layout_height="52dp"
-            android:text="TextView" />
-
-        <Button
-            android:id="@+id/next"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="next" />
-
-        <Button
-            android:id="@+id/previous"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="previous" />
-
-
-
-    </LinearLayout>
 </RelativeLayout>

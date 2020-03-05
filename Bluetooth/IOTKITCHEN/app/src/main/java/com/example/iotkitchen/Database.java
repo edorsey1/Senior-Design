@@ -21,69 +21,20 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
-import androidx.appcompat.app.AppCompatActivity;
-
-import com.google.android.gms.auth.api.signin.GoogleSignIn;
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.android.gms.auth.api.signin.GoogleSignInClient;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.common.SignInButton;
-import com.google.android.gms.common.api.ApiException;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.firebase.auth.AuthCredential;
-import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.GoogleAuthProvider;
-import com.google.android.gms.auth.api.signin.GoogleSignIn;
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.android.gms.auth.api.signin.GoogleSignInClient;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.common.api.ApiException;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthCredential;
-import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.GoogleAuthProvider;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.SetOptions;
-import com.google.firestore.v1.WriteResult;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -138,18 +89,16 @@ public class Database extends AppCompatActivity {
 
     Button next, previous;
     TextView a, b, c, d, e;
-    String recipe;
-    int i = 1;
+    int i = 0;
     int size;
-    FirebaseFirestore mDatabase = FirebaseFirestore.getInstance();
-    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-    String username = user.getDisplayName();
     private static final String TAG = "MainActivity";
-    ArrayAdapter<String> adapter;
-    List<String> list;
-    DocumentReference docref;
-    DocumentReference  recipeStep;
-    Map<String, Map<String, String>> map;
+    RecipeModel recipe;
+    ArrayList<Step> instructions;
+    Step activeStep;
+    int index;
+    String tempText;
+
+    private static CurrentRecipe currentRecipe;
 
     DocumentReference  userData;
 
@@ -161,7 +110,7 @@ public class Database extends AppCompatActivity {
     private BluetoothAdapter btAdapter = null;
     private BluetoothSocket btSocket = null;
     private StringBuilder sb = new StringBuilder();
-    private Database.ConnectedThread mConnectedThread;
+   // private Database.ConnectedThread mConnectedThread;
 
     // SPP UUID service
     private static final UUID MY_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
@@ -186,46 +135,6 @@ public class Database extends AppCompatActivity {
         //Navigation
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_database);
-
-        //Init and Assign Variables
-        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
-
-        //Set Home
-        //BottomNavigationView.setSelectedItemId(R.id.Database)
-        bottomNavigationView.setSelectedItemId(R.id.nav_Scale);
-
-        //Perform
-        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-                //BottomNavigationView.setOnNavigationItemSelectedListener();
-                switch (menuItem.getItemId()) {
-
-                    case R.id.nav_Scale: //scale
-
-                        return true;
-
-                    case R.id.nav_home:
-                        startActivity(new Intent(getApplicationContext()
-                                , MainActivity.class));
-                        overridePendingTransition(0, 0);
-                        return true;
-
-                    case R.id.nav_out:
-                        startActivity(new Intent(getApplicationContext()
-                                , SignOut.class));
-                        overridePendingTransition(0, 0);
-                        return true;
-                    case R.id.nav_Recipe: //recipe
-                        startActivity(new Intent(getApplicationContext()
-                                , Recipe_select.class));
-                        overridePendingTransition(0, 0);
-                        return true;
-                }
-                return false;
-            }
-        });
-
 
         //
         a = (TextView) findViewById(R.id.Ingredient_view);
@@ -269,88 +178,141 @@ public class Database extends AppCompatActivity {
         btAdapter = BluetoothAdapter.getDefaultAdapter();        // get Bluetooth adapter
         //  checkBTState();
 
-//This is bluetooth
-        recipe = getIntent().getStringExtra("Listviewclickvalue");
-        docref = mDatabase.collection("recipes").document("" + recipe + "");
-        docref.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    list = new ArrayList<>();
+        index = getIntent().getIntExtra("IndexClicked", -1);
+        if (index == -1 && currentRecipe == null) {
+            finish();
+        }
+        else if (currentRecipe != null && index == -1) {
+            recipe = currentRecipe.getCurrentRecipe();
+            i = currentRecipe.getStepNum();
+            instructions = recipe.getInstructions();
+            SetStep();
+        }
+        else {
+            recipe = DatabaseMaster.databaseMaster.GetPublicRecipes().get(index);
+            if (currentRecipe == null) {
+                currentRecipe = new CurrentRecipe(recipe);
+                instructions = recipe.getInstructions();
+                if (instructions != null) {
+                    size = instructions.size();
+                    activeStep = instructions.get(i);
 
-                    DocumentSnapshot document = task.getResult();
-                    if (document.exists()) {
-                        map = (Map<String, Map<String, String>>) document.getData().get("instruction");
-                        size = map.size();
-                        String procedure = map.get("step1").get("procedure");
-                        String unit = map.get("step1").get("unit");
-                        String weight = map.get("step1").get("weight");
-                        String ingredient = map.get("step1").get("ingredient");
-                        a.setText(ingredient);
-                        b.setText(procedure);
-                        c.setText(unit);
-                        d.setText(weight);
-                        e.setText("step" + " " + "" + i + "");
-
-                    }
+                    SetStep();
                 }
+            } else if (recipe.getTitle() != currentRecipe.getCurrentRecipe().getTitle()) {
+                currentRecipe = new CurrentRecipe(DatabaseMaster.databaseMaster.GetPublicRecipes().get(index));
+                instructions = recipe.getInstructions();
+                if (instructions != null) {
+                    size = instructions.size();
+                    activeStep = instructions.get(i);
+
+                    SetStep();
+                }
+            } else if (i != currentRecipe.getStepNum()) {
+                i = currentRecipe.getStepNum();
+                SetStep();
             }
-        });
+        }
 
         next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (i < size) {
+                if (i + 1 < size) {
                     i = i + 1;
-                    String procedure = map.get("step" + i + "").get("procedure");
-                    String unit = map.get("step" + i + "").get("unit");
-                    String weight = map.get("step" + i + "").get("weight");
-                    String ingredient = map.get("step" + i + "").get("ingredient");
-                    a.setText(ingredient);
-                    b.setText(procedure);
-                    c.setText(unit);
-                    d.setText(weight);
-                    e.setText("step" + " " + "" + i + "");
-
+                    SetStep();
                 }
-
-
+                else if (i == size-1) {
+                    DatabaseMaster.databaseMaster.SaveData(currentRecipe.getRecipeData());
+                }
             }
         });
         previous.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (i > 1) {
+                if (i >= 1) {
                     i = i - 1;
-                    String procedure = map.get("step" + i + "").get("procedure");
-                    String unit = map.get("step" + i + "").get("unit");
-                    String weight = map.get("step" + i + "").get("weight");
-                    String ingredient = map.get("step" + i + "").get("ingredient");
-                    a.setText(ingredient);
-                    b.setText(procedure);
-                    c.setText(unit);
-                    d.setText(weight);
-
-                    a.setText(ingredient);
-                    b.setText(procedure);
-                    c.setText(unit);
-                    d.setText(weight);
-                    e.setText("step" + " " + "" + i + "");
+                    SetStep();
                 }
-
             }
+        });
 
-            ;
+        //Init and Assign Variables
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
+
+        //Set Home
+        //BottomNavigationView.setSelectedItemId(R.id.Database)
+        bottomNavigationView.setSelectedItemId(R.id.nav_Scale);
+
+        //Perform
+        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+                //BottomNavigationView.setOnNavigationItemSelectedListener();
+                switch (menuItem.getItemId()) {
+
+                    case R.id.nav_Scale: //scale
+
+                        return true;
+
+                    case R.id.nav_home:
+                        startActivity(new Intent(getApplicationContext()
+                                , MainActivity.class));
+                        overridePendingTransition(0, 0);
+                        return true;
+
+                    case R.id.nav_out:
+                        startActivity(new Intent(getApplicationContext()
+                                , SignOut.class));
+                        overridePendingTransition(0, 0);
+                        return true;
+
+                    case R.id.nav_Recipe: //recipe
+                        startActivity(new Intent(getApplicationContext()
+                                , Recipe_select.class));
+                        overridePendingTransition(0, 0);
+                        return true;
+                }
+                return false;
+            }
         });
     }
 
-    private BluetoothSocket createBluetoothSocket (BluetoothDevice device) throws IOException {
-        if (Build.VERSION.SDK_INT >= 10) {
-            try {
-                final Method m = device.getClass().getMethod("createInsecureRfcommSocketToServiceRecord", new Class[]{UUID.class});
-                return (BluetoothSocket) m.invoke(device, MY_UUID);
-            } catch (Exception e) {
-                Log.e(TAG, "Could not create Insecure RFComm Connection", e);
+    private void SetStep() {
+        activeStep = instructions.get(i);
+        a.setText(activeStep.getIngredient());
+        b.setText(activeStep.getProcedure());
+        c.setText(activeStep.getUnit());
+        d.setText(Integer.toString(activeStep.getWeight()));
+        tempText = "step" + " " + "" + Integer.toString(i+1) + "";
+        e.setText(tempText);
+    }
+
+    @Override
+    public void onResume () {
+        super.onResume();
+        if (instructions != null) {
+            SetStep();
+        }
+    }
+
+    @Override
+    public void onPause () {
+        super.onPause();
+        if (currentRecipe != null) {
+            currentRecipe.setStepNum(i);
+        }
+    }
+
+    /*
+
+        private BluetoothSocket createBluetoothSocket (BluetoothDevice device) throws IOException {
+            if (Build.VERSION.SDK_INT >= 10) {
+                try {
+                    final Method m = device.getClass().getMethod("createInsecureRfcommSocketToServiceRecord", new Class[]{UUID.class});
+                    return (BluetoothSocket) m.invoke(device, MY_UUID);
+                } catch (Exception e) {
+                    Log.e(TAG, "Could not create Insecure RFComm Connection", e);
+                }
             }
         }
         return device.createRfcommSocketToServiceRecord(MY_UUID);
@@ -381,7 +343,7 @@ public class Database extends AppCompatActivity {
     } catch (IOException e) {
       errorExit("Fatal Error", "In onResume() and socket create failed: " + e.getMessage() + ".");
     }
-    */
+
 
 
         // Discovery is resource intensive.  Make sure it isn't going on
@@ -410,7 +372,7 @@ public class Database extends AppCompatActivity {
         mConnectedThread = new ConnectedThread(btSocket);
         mConnectedThread.start();
     }
-
+/*
     @Override
     public void onPause() {
         super.onPause();
@@ -481,7 +443,7 @@ public class Database extends AppCompatActivity {
             }
         }
 
-        /* Call this from the main activity to send data to the remote device */
+        /* Call this from the main activity to send data to the remote device
 
         public void write (String message){
             Log.d(TAG, "...Data to send: " + message + "...");
@@ -494,5 +456,6 @@ public class Database extends AppCompatActivity {
         }
 
 
-    }
+    }*/
 }
+
