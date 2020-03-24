@@ -1,5 +1,7 @@
 package com.example.iotkitchen;
 
+
+//Class model to hold the current step information
 class Step {
     private String ingredient;
     private int number;  //What is this for??? I do not know...

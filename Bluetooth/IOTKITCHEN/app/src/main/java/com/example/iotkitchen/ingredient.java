@@ -11,15 +11,17 @@ import android.widget.ListView;
 
 import java.util.ArrayList;
 
+//Activity and page that lists all the ingredients of the selected recipe, before starting the recipes
 public class ingredient extends AppCompatActivity {
     Button start;
 
     private ListView listView;
-    private static final String TAG = "MainActivity";
     ArrayAdapter<String> adapter;
     ArrayList<String> ingredients;
 
     int index;
+
+    //Initialize all the UI elements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -31,12 +33,14 @@ public class ingredient extends AppCompatActivity {
         listView=findViewById(R.id.database);
         ingredients=DatabaseMaster.databaseMaster.GetPublicRecipes().get(index).getIngredient();
 
+        //Set the adapter to display all of the ingredients in a list view
         if (ingredients != null) {
             adapter=new ArrayAdapter<>(ingredient.this, android.R.layout.simple_list_item_1, ingredients);
             listView.setAdapter(adapter);
         }
 
 
+        //When the start button is clicked begin the recipe by starting the Database activity
         start.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

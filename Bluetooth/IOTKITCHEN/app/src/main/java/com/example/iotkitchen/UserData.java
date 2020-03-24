@@ -3,6 +3,7 @@ package com.example.iotkitchen;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+//Holds relevant user data in a static model class
 public class UserData {
     public String id = null;
     public String userName = null;

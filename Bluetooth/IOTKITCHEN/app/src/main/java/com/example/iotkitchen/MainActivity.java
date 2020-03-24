@@ -1,6 +1,5 @@
 package com.example.iotkitchen;
 
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -11,17 +10,12 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.lang.reflect.Method;
-import java.util.UUID;
-
-
+//Welcome page shown upon loggin in
 public class MainActivity extends AppCompatActivity {
 
     TextView welcomeText;
 
+    //Initialize UI elements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,6 +63,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    //Upon starting, check if the user is signed in by calling CheckUser method
     @Override
     public void onStart() {
         super.onStart();
@@ -76,12 +71,13 @@ public class MainActivity extends AppCompatActivity {
         CheckUser();
     }
 
-        // Check if user is signed in (non-null) and update UI accordingly.
+    // Check if user is signed in (non-null) and update UI accordingly.  If not sign in redirect the user to the LoginActivity
     private void CheckUser() {
         if (UserData.userData.user == null) {
             startActivity(new Intent(MainActivity.this, LoginActivity.class));
         }
         else {
+            //Set a welcome message with the users username included
             welcomeText.setText("Welcome " + UserData.userData.userName);
         }
     }

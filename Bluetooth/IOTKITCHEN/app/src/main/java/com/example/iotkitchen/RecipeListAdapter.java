@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
+//Custom adapter used to display the recipes
 public class RecipeListAdapter extends RecyclerView.Adapter<RecipeListAdapter.MyViewHolder> {
 
     private ArrayList<RecipeModel> recipes;
@@ -70,7 +71,12 @@ public class RecipeListAdapter extends RecyclerView.Adapter<RecipeListAdapter.My
     // Return the size of your dataset (invoked by the layout manager)
     @Override
     public int getItemCount() {
-        return recipes.size();
+        if (recipes != null) {
+            return recipes.size();
+        }
+        else {
+            return 0;
+        }
     }
 
     public interface RecipeSelect {
