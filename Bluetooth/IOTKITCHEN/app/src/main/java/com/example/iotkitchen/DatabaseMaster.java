@@ -15,18 +15,23 @@ import com.google.firebase.firestore.SetOptions;
 
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;;
 
+//All database calls
 public class DatabaseMaster {
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    //Firebase reference to the users data, such as recipes and recipe data
     private DocumentReference userRef = db.collection("users").document(UserData.userData.id);
+
+    //List of all the public recipes
     private ArrayList<RecipeModel> publicRecipes;
 
     private boolean running = true;
 
+    //Persistant instance of this class
     public static DatabaseMaster databaseMaster = new DatabaseMaster();
 
+    //Initialize the database and get users data
     public void SetUp() {
         userRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
@@ -36,6 +41,7 @@ public class DatabaseMaster {
                     if (document.exists()) {
                         Log.d("hyh", "Document exists");
                     } else {
+                        //If new user, add relevant files in the database
                         HashMap empty = new HashMap();
                         userRef.collection("PersonalRecipes").document("tester")
                                 .set(empty, SetOptions.merge());
@@ -47,6 +53,7 @@ public class DatabaseMaster {
                 }
             }
         });
+        //Get all the public recipes and set them in publicRecipes variable
         db.collection("recipes").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -57,7 +64,7 @@ public class DatabaseMaster {
                             RecipeModel temp = new RecipeModel();
                             temp = document.toObject(RecipeModel.class);
                             temp.setReference(document.getReference());
-                            publicRecipes.add(document.toObject(RecipeModel.class));
+                            publicRecipes.add(temp);
                             running = false;
                         } catch (Exception e) {
                             Exception temp = e;
@@ -75,10 +82,12 @@ public class DatabaseMaster {
         return publicRecipes;
     }
 
+    //Clears data when user logs out
     public static void LoggedOut() {
         databaseMaster  = new DatabaseMaster();
     }
 
+    //When the recipe is finished, saves the cooking session data in the database
     public void SaveData(RecipeData data) {
         userRef.collection("CookingSessions").document("1")
                 .set(data, SetOptions.merge());

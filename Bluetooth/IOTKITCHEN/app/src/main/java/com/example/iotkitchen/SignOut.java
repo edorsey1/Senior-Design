@@ -12,10 +12,10 @@ import androidx.annotation.NonNull;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.GoogleAuthCredential;
 
 import android.view.View;
 
+//Sign out the user and bring them to the login page
 public class SignOut extends AppCompatActivity {
 
 

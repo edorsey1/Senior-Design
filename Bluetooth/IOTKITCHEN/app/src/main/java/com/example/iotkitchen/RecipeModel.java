@@ -5,6 +5,7 @@ import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 
+//Holds the recipes information similar to as in firebase; holds the name, duration, ingredients, and instructions
 public class RecipeModel {
     private String title;
     private String time;

@@ -24,6 +24,7 @@ import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.GoogleAuthProvider;
 
+//Login page/activity
 public class LoginActivity extends AppCompatActivity {
     private static final String TAG = "GoogleActivity";
     SignInButton button;
@@ -32,6 +33,7 @@ public class LoginActivity extends AppCompatActivity {
     private GoogleSignInClient mGoogleSignInClient;
     private final static int RC_SIGN_IN =2;
 
+    //When activity starts, initialize UI content
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,6 +43,7 @@ public class LoginActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         //startActivity(new Intent(MainActivity.this, MainActivity.class));
 
+        //When login button is clicked call the signIn() method and attempt google login
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -53,6 +56,7 @@ public class LoginActivity extends AppCompatActivity {
                 .build();
 
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+        //Listener for changes to firebaseAuth, once user is logged in start the MainActivity and save the current users pertinent data in a class
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
@@ -64,6 +68,7 @@ public class LoginActivity extends AppCompatActivity {
         };
     }
 
+    //When started, start the listener from onCreate to listen for changes in firebaseAuth
     @Override
     public void onStart() {
         super.onStart();
@@ -71,11 +76,13 @@ public class LoginActivity extends AppCompatActivity {
         mAuth.addAuthStateListener(mAuthListener);
     }
 
+    //Start the google sign in activity to sign in
     private void signIn() {
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }
 
+    //When the google sign in activity is completed, if successful login to firebase
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
