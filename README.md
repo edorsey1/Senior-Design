@@ -18,7 +18,7 @@ Voice - NLU text to speech proof of concept and Dialogflow fulfillment code and 
 
 #### Software 
 
-### Natural Language Understanding
+#### Natural Language Understanding
 The Natural Language Understanding (NLU) module of the project is almost complete, but there is a lot of room for additional functionality. Additional intents and fulfillment code can easily be written using the Dialogflow API and javascript code. Please see 
 README_SOFTWARE.md for more information on how to develop intents. 
 
