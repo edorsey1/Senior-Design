@@ -1,5 +1,5 @@
 # IoT_Kitchen
-##Senior Design Project Team 21
+Senior Design Project Team 21
 
 ### Repository Directory
 Arduino Test Code - All Arduino code.  Most recent test code is Scale_Micro and Temp_Micro.
