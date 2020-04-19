@@ -296,7 +296,7 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, resp
         else {
           ingredientLength = doc.data().numbers.ingredients;
 
-          if (stepNum === "")
+          if (stepNum != "")
           {
             switch (stepNum) {
               case 'first':
