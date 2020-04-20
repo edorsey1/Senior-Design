@@ -9,5 +9,19 @@ All code involved in developing the Natural Language Understanding (NLU) module 
 #### Dependencies
 
 #### Development Tools Information
+NodeJS v12.10.0
+
+Google Dialogflow V2
+
+Google Firebase Cloud Firestore admin 8.7.0
 
 #### Installation and Development Guide
+Development of the NLU module does not require any installation, as all the Google tools can be found on online platforms. Development requires the following tools:
+
+[Dialogflow](https://dialogflow.cloud.google.com/)
+
+[Google Firebase Cloud Firestore](https://console.firebase.google.com/)
+
+[Actions on Google](https://console.actions.google.com/)
+
+These tools require a developer to have a Google account and email. An account can be created by going to google.com and clicking the "Sign In" button in the upper right corner. This account must be signed in to to use any of the three development tools. Once a developer has an account, you need to initialize a Google project by selecting "Add project" on any of the development tools. Once created, this project must be selected from the drop down menu of projects in the other development tools to link the tools together. If all three tools are linked to the same project, data can be shared between them. 
