@@ -68,7 +68,7 @@ The following are dependecies for Android Studio build.gradle
 [Adobe XD 24.3.22.2](https://www.adobe.com/products/xd.html)
 
 #### Installation Guide
-With Android Studio downloaded you can add a existing project. 
+With Android Studio downloaded you can add an existing project. This can be done by downloading the IOTKithcen folder as a zip and then opening it with Android Studio. Below is how you can navigate to the application. 
 
     20-21-IotKitchen/Bluetooth/IOTKITCHEN/app/src/main/
 
