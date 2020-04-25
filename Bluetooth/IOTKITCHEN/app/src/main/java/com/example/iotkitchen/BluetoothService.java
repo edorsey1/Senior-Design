@@ -292,7 +292,10 @@ public class BluetoothService extends Service {
                 int bytes; // bytes returned from read()
                 int readBufferPosition = 0;
                 final byte delimiter = 10; //This is the ASCII code for a newline character
-
+                try {
+                    mmInStream.read();
+                }
+                catch (Exception e) {}
                 while (true) {
                     try {
                         if (mmInStream != null) {
@@ -302,12 +305,16 @@ public class BluetoothService extends Service {
                             int bytesAvailable = mmInStream.available();
                             //Checks if there is a message and sends the message to the relevant activity handler to store the data
                             if (bytesAvailable > 0) {
+                                Thread.sleep(10);
+                                bytesAvailable = mmInStream.available();
                                 byte[] packetBytes = new byte[bytesAvailable];
                                 mmInStream.read(packetBytes);
-                                final String string=new String(packetBytes,"UTF-8");
-                                int data = Integer.getInteger(string);
-                                mHandler.obtainMessage(2, data, -1, buffer).sendToTarget();
-                                Thread.sleep(1000);
+                                String string=new String(packetBytes,"UTF-8");
+                                int temp = Integer.parseInt(string.substring(0,2));
+                                string = string.substring(2,string.length()-2);
+                                int data = Integer.parseInt(string);
+                                mHandler.obtainMessage(2, data, temp, buffer).sendToTarget();
+                                Thread.sleep(900);
                             }
                         }
                         else {

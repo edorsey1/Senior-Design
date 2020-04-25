@@ -8,6 +8,7 @@ public class CurrentRecipe {
     private RecipeModel currentRecipe;
     private int stepNum;
     private RecipeData recipeData;
+    private String currentIngredient;
 
     public CurrentRecipe(RecipeModel currentRecipe) {
         this.currentRecipe = currentRecipe;
@@ -42,19 +43,34 @@ public class CurrentRecipe {
         this.stepNum = stepNum;
     }
 
+    public String getCurrentIngredient() {
+        return currentIngredient;
+    }
+
+    public void setCurrentIngredient(String currentIngredient) {
+        this.currentIngredient = currentIngredient;
+    }
+
     //Handler that receives bluetooth data and then stores it
     Handler.Callback Temp = new Handler.Callback() {
         @Override
         public boolean handleMessage(android.os.Message msg) {
             Log.d("test","test");
             int readMessage;
+            int chooser;
             switch (msg.what) {
                 case 2:
-                    int bytes = msg.arg1;
+                    //int bytes = msg.arg1;
                     //recipeData.addTemp(bytes);
                     try {
-                        readMessage = (int) msg.obj;
-                        recipeData.addTemp(readMessage);
+                        readMessage = msg.arg1;
+                        chooser = msg.arg2;
+                        if (chooser == -2) {
+                            recipeData.addWeight(readMessage,currentIngredient);
+                        }
+                        else if (chooser == -1) {
+                            recipeData.addTemp(readMessage);
+                        }
                     } catch (Exception e) {
                         e.printStackTrace();
                     }

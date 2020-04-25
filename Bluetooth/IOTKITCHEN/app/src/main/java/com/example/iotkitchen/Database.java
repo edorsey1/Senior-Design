@@ -38,7 +38,7 @@ public class Database extends AppCompatActivity {
 
     //UI parts
     Button next, previous;
-    TextView a, b, c, d, e;
+    TextView a, b, c, d, e, w, in;
 
     //Current step number
     int i = 0;
@@ -64,12 +64,12 @@ public class Database extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-        data.put("exist", true);
+        //data.put("exist", true);
 
-        mDatabase.collection("users").document(username)
-                .set(data, SetOptions.merge());
+        //mDatabase.collection("users").document(username)
+                //.set(data, SetOptions.merge());
 
-        userData = mDatabase.collection("users").document(username);
+        //userData = mDatabase.collection("users").document(username);
 
         //Navigation
         super.onCreate(savedInstanceState);
@@ -81,6 +81,8 @@ public class Database extends AppCompatActivity {
         c = (TextView) findViewById(R.id.unit_view);
         d = (TextView) findViewById(R.id.weight_view);
         e = (TextView) findViewById(R.id.step);
+        w = findViewById(R.id.weight);
+        in = findViewById(R.id.Ingredient);
         next = (Button) findViewById(R.id.next);
         previous = (Button) findViewById(R.id.previous);
 
@@ -137,6 +139,10 @@ public class Database extends AppCompatActivity {
                 }
                 else if (i == size-1) {
                     DatabaseMaster.databaseMaster.SaveData(currentRecipe.getRecipeData());
+                    Intent intent = new Intent(Database.this, MainActivity.class);
+                    intent.putExtra("Completed", "Congrats!\n\n  You just finished cooking the recipe:\n\n" + currentRecipe.getCurrentRecipe().getTitle() + "\n\n We hope you enjoy it!");
+                    currentRecipe = null;
+                    startActivity(intent);
                 }
             }
         });
@@ -195,11 +201,36 @@ public class Database extends AppCompatActivity {
     //Set the UI text elements for the steps
     private void SetStep() {
         activeStep = instructions.get(i);
-        a.setText(activeStep.getIngredient());
+        if (activeStep.getIngredient() == null) {
+            a.setText("");
+            in.setText("");
+        }
+        else {
+            in.setText("Ingredients");
+            a.setText(activeStep.getIngredient());
+            currentRecipe.setCurrentIngredient(activeStep.getIngredient());
+        }
         b.setText(activeStep.getProcedure());
-        c.setText(activeStep.getUnit());
-        d.setText(Integer.toString(activeStep.getWeight()));
+        if (activeStep.getWeight() == 0) {
+            c.setText("");
+            d.setText("");
+            w.setText("");
+        }
+        else {
+            w.setText("Weight");
+            c.setText(activeStep.getUnit());
+            d.setText(Integer.toString(activeStep.getWeight()));
+        }
         tempText = "step" + " " + "" + Integer.toString(i+1) + "";
+        next.setText("next");
+        previous.setVisibility(View.VISIBLE);
+        if (i == size-1) {
+            tempText = "Final step";
+            next.setText("Finish");
+        }
+        else if (i == 0) {
+            previous.setVisibility(View.INVISIBLE);
+        }
         e.setText(tempText);
     }
 

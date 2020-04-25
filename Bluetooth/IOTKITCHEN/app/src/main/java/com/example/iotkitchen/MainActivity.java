@@ -77,8 +77,21 @@ public class MainActivity extends AppCompatActivity {
             startActivity(new Intent(MainActivity.this, LoginActivity.class));
         }
         else {
-            //Set a welcome message with the users username included
-            welcomeText.setText("Welcome " + UserData.userData.userName);
+            try {
+                Intent intent = getIntent();
+                String message = intent.getStringExtra("Completed");
+                if (message != null) {
+                    welcomeText.setText(message);
+                }
+                else {
+                    //Set a welcome message with the users username included
+                    welcomeText.setText("Welcome " + UserData.userData.userName);
+                }
+            }
+            catch (Exception e) {
+                //Set a welcome message with the users username included
+                welcomeText.setText("Welcome " + UserData.userData.userName);
+            }
         }
     }
 }

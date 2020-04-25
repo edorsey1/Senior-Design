@@ -62,12 +62,6 @@ public class Recipe_select extends AppCompatActivity implements RecipeListAdapte
                         overridePendingTransition(0, 0);
                         return true;
 
-                    case R.id.nav_out:
-                        startActivity(new Intent(getApplicationContext()
-                                , SignOut.class));
-                        overridePendingTransition(0, 0);
-                        return true;
-
                     case R.id.nav_Recipe: //recipe
                         return true;
                 }

@@ -15,7 +15,9 @@ import com.google.firebase.firestore.SetOptions;
 
 
 import java.util.ArrayList;
-import java.util.HashMap;;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;;
 
 //All database calls
 public class DatabaseMaster {
@@ -59,9 +61,9 @@ public class DatabaseMaster {
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
                     publicRecipes = new ArrayList<>();
-                    for (QueryDocumentSnapshot document : task.getResult()) {
+                    for (QueryDocumentSnapshot document : Objects.requireNonNull(task.getResult())) {
                         try {
-                            RecipeModel temp = new RecipeModel();
+                            RecipeModel temp;
                             temp = document.toObject(RecipeModel.class);
                             temp.setReference(document.getReference());
                             publicRecipes.add(temp);
@@ -89,6 +91,7 @@ public class DatabaseMaster {
 
     //When the recipe is finished, saves the cooking session data in the database
     public void SaveData(RecipeData data) {
+        //ArrayList<Integer> temp = data.getTemp();
         userRef.collection("CookingSessions").document("1")
                 .set(data, SetOptions.merge());
     }
