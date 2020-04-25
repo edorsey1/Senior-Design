@@ -3,6 +3,45 @@
 ## General Software
 ## Android Mobile Application
 #### Repository Overview
+All code for the software components can be found in the Bluetooth folder of the repository. The IOTKITCHEN folder will include Navigation Bar, Bluetooth Connectivity, User Authentication as well as Front End Developemnt. The MealDB folder is not used for the final version of the project. 
+
+#### Dependencies
+The following are dependecies for Android Studio build.gradle
+
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation 'androidx.appcompat:appcompat:1.1.0'
+    implementation 'com.google.android.material:material:1.1.0'
+
+
+    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
+    implementation 'com.google.firebase:firebase-database:19.2.0'
+    implementation 'com.google.firebase:firebase-storage:16.0.4'
+    implementation 'com.android.support:appcompat-v7:29.+'
+    implementation 'com.android.support.constraint:constraint-layout:1.1.3'
+    implementation 'com.android.support:support-v4:29.+'
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation 'androidx.lifecycle:lifecycle-extensions:2.0.0'
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+
+    implementation 'com.google.firebase:firebase-auth:19.1.0'
+    implementation 'com.google.firebase:firebase-analytics:17.2.0'
+    implementation 'com.google.android.gms:play-services-auth:17.0.0'
+    implementation 'com.google.firebase:firebase-firestore:21.4.0'
+
+#### Development Tools Information
+[Android Studio 3.5.2](https://developer.android.com/studio)
+    
+    compileSdkVersion 29
+    buildToolsVersion "29.0.2"
+
+[Sketch Version 60](https://www.sketch.com/get/)
+
+[Adobe XD 24.3.22.2](https://www.adobe.com/products/xd.html)
+
+#### Installation Guide
+
 
 ## Natural Language Understanding
 #### Repository Overview
