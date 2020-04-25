@@ -17,6 +17,14 @@ Voice - NLU text to speech proof of concept and Dialogflow fulfillment code and 
 #### Hardware
 
 #### Software 
+The Software module of this project is still in the midst of completing as the semester was cut short due to the COVID-19 pandemic. 
+
+We broke up our software component into two categories: Backend and Frontend. Doing so would make it easier to split up work. The Frontend of the Mobile Application was utilized using Sketch while the Backend uses Android Studio. Please see README_SOFTWARE.md for more information on which tools are used for development.
+
+The Login page is only able to use Google Accounts because of the connectivity to Google Firebase. Upon successful user authentication, users will be greeted with “Hello (Name).” This means that their data is now on the Firebase storage and their favorite recipes and dishes that they wish to make or decide to edit will now be stored. Following the Login page is the Recipes page which includes recipes based upon different categories and diets. Our main intentions for the Recipes page was to integrate the MealDB folder. Currently we are working on including time and ingredients for the recipe in order for users to add their own spin.
+
+Once a user selects their recipe, they will be prompted to a page that will include the necessary ingredients and nutritional value followed by a start button below. This will then bring them to the scale bar which will display the instructions with NEXT and PREVIOUS buttons. Heading over to the User Profile Page, you will have the log out function as well as the ability to see the user’s data.
+
 
 #### Natural Language Understanding
 The Natural Language Understanding (NLU) module of the project is almost complete, but there is a lot of room for additional functionality. Additional intents and fulfillment code can easily be written using the Dialogflow API and javascript code. Please see 
