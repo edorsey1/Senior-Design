@@ -4,6 +4,33 @@
 ## Android Mobile Application
 #### Repository Overview
 All code for the software components can be found in the Bluetooth folder of the repository. The IOTKITCHEN folder will include Navigation Bar, Bluetooth Connectivity, User Authentication as well as Front End Developemnt. The MealDB folder is not used for the final version of the project. 
+Listed below is the complete function of what each module does on the IOTKITCHEN folder:
+
+ * Bluetooth: Multithread Bluetooth socket to ensure all devices can be connected to the application
+    
+ * Current_Recipe: Current_Recipe class that has getter setter functions and declared variables and the exception handling       function.
+    
+  * Database_Class: reads data from firestore and set the data to the UI
+    
+ * Database_Master: Firebase reference to user data and public recipe, and new user is created, add the user profile to            database and give the user the public recipe.
+    
+ * Login: Login the user with google firebase authentication upon successful login, update the UI with the current user            information.
+    
+  * Main_activity: Welcome page shows upon successful login
+    
+*    Recipe_Data: a class of recipe data with getter and setter function
+    
+  *  RecipeListAdapatar: Custom adapter used to display the recipes with a suitable constructor upon dataset.
+    RecipeMode: Holds the recipes information similar to as in firebase; holds the name, duration, ingredients, and                 instructions
+    
+  *  Recipe_select: Activity/page where the user can select from all available public recipes in order to start cooking and          When a recipe is selected, bring the user to ingredient page/activity to display all of the ingredients for the selected
+    
+  *  Signout: Signout the user and return to the login page.
+   
+  *  Steps: Class model to hold the current step information with getter and setter functions.
+    
+  *  UserData: Hold user data in a static model so it can be accessed globally
+
 
 #### Dependencies
 The following are dependecies for Android Studio build.gradle
@@ -41,7 +68,9 @@ The following are dependecies for Android Studio build.gradle
 [Adobe XD 24.3.22.2](https://www.adobe.com/products/xd.html)
 
 #### Installation Guide
+With Android Studio downloaded you can add a existing project. 
 
+    20-21-IotKitchen/Bluetooth/IOTKITCHEN/app/src/main/
 
 ## Natural Language Understanding
 #### Repository Overview
