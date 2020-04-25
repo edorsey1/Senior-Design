@@ -4,7 +4,7 @@ Senior Design Project Team 21
 ### Repository Directory
 Arduino Test Code - All Arduino code.  Most recent test code is Scale_Micro and Temp_Micro.
 
-Bluetooth - 
+Bluetooth - Final Code for Software with Hardware components such as bluetooth connection.
 
 MealDB - Code for database of recipes for use in app with categories, recipes, instructions etc.
 
@@ -24,6 +24,8 @@ We broke up our software component into two categories: Backend and Frontend. Do
 The Login page is only able to use Google Accounts because of the connectivity to Google Firebase. Upon successful user authentication, users will be greeted with “Hello (Name).” This means that their data is now on the Firebase storage and their favorite recipes and dishes that they wish to make or decide to edit will now be stored. Following the Login page is the Recipes page which includes recipes based upon different categories and diets. Our main intentions for the Recipes page was to integrate the MealDB folder. Currently we are working on including time and ingredients for the recipe in order for users to add their own spin.
 
 Once a user selects their recipe, they will be prompted to a page that will include the necessary ingredients and nutritional value followed by a start button below. This will then bring them to the scale bar which will display the instructions with NEXT and PREVIOUS buttons. Heading over to the User Profile Page, you will have the log out function as well as the ability to see the user’s data.
+
+In terms of connectivity to the Arduino, data is sent from the Arduino via bluetooth. This will be displayed on the Scale page. For more information, please reference to README_SOFTWARE.md
 
 
 #### Natural Language Understanding
