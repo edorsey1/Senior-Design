@@ -1,6 +1,5 @@
 # Software Report
 
-## General Software
 ## Android Mobile Application
 #### Repository Overview
 All code for the software components can be found in the Bluetooth folder of the repository. The IOTKITCHEN folder will include Navigation Bar, Bluetooth Connectivity, User Authentication as well as Front End Developemnt. The MealDB folder is not used for the final version of the project. 
