@@ -2,7 +2,7 @@
 Senior Design Project Team 21
 
 ### Repository Directory
-Arduino Test Code - All Arduino code.  Calibration code for the scale is titled: Scale_Calibration.  Most recent test code and that used in the final demo is: Final_scale_demo for the scale and: Temp_Micro for the temperature sensor.
+Arduino Test Code - All Arduino code.  Calibration code for the scale is titled: Scale_Calibration.  Most recent test code and that used in the final demo is: Final_scale_demo for the scale and: Temp_Micro for the temperature sensor.  Although code, it is more closely related to hardware and thus discussed further in the README_HARDWARE.md.
 
 Bluetooth - Android Studio project containing the final Code for our application, includidng a blutooth connection to our hardware components.
 
