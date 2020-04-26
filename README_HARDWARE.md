@@ -19,9 +19,9 @@ The below table also does not take into account wires, breadboard, buttons, or o
 The circuit schematic can be found in pdf format here: [Scale Circuit Schematic](Scale_Circuit_Schematic.pdf)
 
  * Image of the scale from a top down view
-![](.Images/Scale_top.jpg)
+![](./Images/Scale_top.jpg)
  * Image of the scale from a side view to see the load cell
-![](.Images/Scale_side.jpg)
+![](./Images/Scale_side.jpg)
 
 
 #### Code/How to run
@@ -73,10 +73,10 @@ The below table also does not take into account wires, breadboard, or other mino
 
 
 #### Circuit Schematic and Assembled Circuit
-The circuit schematic can be found in pdf format here: [Temperature Sensor Circuit Schematic](.Images/Temp_Circuit_Schematic.pdf)
+The circuit schematic can be found in pdf format here: [Temperature Sensor Circuit Schematic](./Images/Temp_Circuit_Schematic.pdf)
 
  * Image of the temperature sensor from a top down view
-![](.Images/Temperature_sensor.jpg)
+![](./Images/Temperature_sensor.jpg)
 
 
 #### Code/How to run
