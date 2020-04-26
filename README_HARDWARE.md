@@ -14,5 +14,8 @@ The below table also does not take into account wires, breadboard, buttons, or o
 | 16x2 I2C LCD Display | $6.22 | [Amazon](https://www.amazon.com/ILS-Backlight-Display-Screen-Arduino/dp/B07PXV4YHL/ref=sr_1_30?crid=1AUB126ST113F&dchild=1&keywords=16x2+lcd+i2c&qid=1587930056&sprefix=16x2+LCD+%2Caps%2C149&sr=8-30) |
 | Total: | $44.66 | -------- |
 
-#### Circuit Schematic
+
+#### Circuit Schematic and Assembled Circuit
 [Scale Circuit Schematic](Scale_Circuit_Schematic.pdf)
+[Scale Top Down View](Scale_top.jpg)
+[Scale Side View](Scale_side.pdf)
