@@ -5,30 +5,35 @@
 All code for the software components can be found in the Bluetooth folder of the repository. The IOTKITCHEN folder will include Navigation Bar, Bluetooth Connectivity, User Authentication as well as Front End Developemnt. The MealDB folder is not used for the final version of the project. 
 Listed below is the complete function of what each module does on the IOTKITCHEN folder:
 
- * Bluetooth: Multithread Bluetooth socket to ensure all devices can be connected to the application
+ * BluetoothService: Multithread Bluetooth socket that connects to our sensors and parses the incoming data to differentiate between temperature and scale data.  When data is received, it sends it to the callback located in the CurrentRecipe class.  It is started by the database class when a recipe is begun and ended once the recipe is finished.
     
- * Current_Recipe: Current_Recipe class that has getter setter functions and declared variables and the exception handling       function.
+ * CurrentRecipe: Current_Recipe class that has getter setter functions and declared variables and contains the callback used when the bluetooth service receives data.  The callback saves the data in a local variable that will be saved into the database upon completion of the recipe.
     
-  * Database_Class: reads data from firestore and set the data to the UI
+  * Database: An ill titled class that is in charge of setting the UI elements that walk the user through a recipe.  It also begins the BluetoothService and initiates the saving of recipe data by the DatabaseMaster at the completion of the recipe.
     
- * Database_Master: Firebase reference to user data and public recipe, and new user is created, add the user profile to            database and give the user the public recipe.
+ * DatabaseMaster: Class that is in charge of all firebase calls.  Is a global static class.  Holds a referance to the database and receives all relevant information from the database upon a user loggin in.  It also saves relevant data in the database once a recipe is completed.
+
+ * ingredient: A class that sets the UI to display all of the needed ingredients for the currently selected recipe and has a button for the user to start cooking the recipe.
     
- * Login: Login the user with google firebase authentication upon successful login, update the UI with the current user            information.
+ * LoginActivity: Login the user with google firebase authentication.  Upon successful login, send the user to the MainActivity page to be welcomed.
     
-  * Main_activity: Welcome page shows upon successful login
+ * Main_activity: Welcome page shows upon successful login and the page that congratulates the user after completing a recipe.
     
-*    Recipe_Data: a class of recipe data with getter and setter function
+ * MyApplication: Master application class that has a basic callback function that is set by the CurrentRecipe class and is accessed by the BluetoothService.
+ 
+ * Recipe_select: Activity that uses our custom adapter, RecipeListAdapter, to display all of the available recipes in the UI.  The user can then select from one of the recipes to be brough to the ingredient Activity to view all of the ingredients for the selected recipe.
+
+ * RecipeData: A model class of recipe data with getter and setter functions made to work so that all of the data contained within can be saved in the database with one call.
     
-  *  RecipeListAdapatar: Custom adapter used to display the recipes with a suitable constructor upon dataset.
-    RecipeMode: Holds the recipes information similar to as in firebase; holds the name, duration, ingredients, and                 instructions
+ * RecipeListAdapatar: Custom adapter used to display the recipes.
+
+ * RecipeModel: Holds the recipes information similar to as in firebase; holds the name, duration, ingredients, and instructions.  It is formatted in a way so that a single call to the firebase database can populate the class.
     
-  *  Recipe_select: Activity/page where the user can select from all available public recipes in order to start cooking and          When a recipe is selected, bring the user to ingredient page/activity to display all of the ingredients for the selected
-    
-  *  Signout: Signout the user and return to the login page.
+ *  SignOut: Signout the user and return to the login page.
    
-  *  Steps: Class model to hold the current step information with getter and setter functions.
+ *  Steps: Class model to hold the current step/instruction information with getter and setter functions that work with firebase.
     
-  *  UserData: Hold user data in a static model so it can be accessed globally
+ *  UserData: Holds pertinent user data in a static model so it can be accessed globally.
 
 
 #### Dependencies
@@ -70,6 +75,16 @@ The following are dependecies for Android Studio build.gradle
 With Android Studio downloaded you can add an existing project. This can be done by downloading the IOTKithcen folder as a zip and then opening it with Android Studio. Below is how you can navigate to the application. 
 
     20-21-IotKitchen/Bluetooth/IOTKITCHEN/app/src/main/
+
+An error may occur if you initially try and build/run the app.  To fix this error click Gradle on the far upper left of Android Studio and go to
+
+    IOTKITCHEN -> Tasks -> android
+
+And then double click signingReport.  At this point some stuff should run in the run tab, accessed by clicking the Run button at the bottom left of Android Studio.  At this point copy the string of HEX to the right of SHA1: and go to your firebase project.  Once into your firebase project, navigate to Project Settings.  Finally, scroll down to SHA certificate fingerprints and add the copied string to this list.  Now the app should be ready to run.
+
+Then connect your android device or create a virtual device and build and run the application using the green arrow near the top middle of Android Studio, amking sure your desired device is selected in the box to the left of the arrow.
+
+An error may occur, 
 
 ## Natural Language Understanding
 #### Repository Overview

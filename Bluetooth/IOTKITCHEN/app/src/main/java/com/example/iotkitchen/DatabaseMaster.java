@@ -17,7 +17,6 @@ import com.google.firebase.firestore.SetOptions;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;;
 
 //All database calls
@@ -28,8 +27,6 @@ public class DatabaseMaster {
 
     //List of all the public recipes
     private ArrayList<RecipeModel> publicRecipes;
-
-    private boolean running = true;
 
     //Persistant instance of this class
     public static DatabaseMaster databaseMaster = new DatabaseMaster();

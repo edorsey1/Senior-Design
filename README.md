@@ -2,9 +2,9 @@
 Senior Design Project Team 21
 
 ### Repository Directory
-Arduino Test Code - All Arduino code.  Most recent test code is Scale_Micro and Temp_Micro.
+Arduino Test Code - All Arduino code.  Calibration code for the scale is titled: Scale_Calibration.  Most recent test code and that used in the final demo is: Final_scale_demo for the scale and: Temp_Micro for the temperature sensor.
 
-Bluetooth - Final Code for Software with Hardware components such as bluetooth connection.
+Bluetooth - Android Studio project containing the final Code for our application, includidng a blutooth connection to our hardware components.
 
 MealDB - Code for database of recipes for use in app with categories, recipes, instructions etc.
 
@@ -15,17 +15,28 @@ Voice - NLU text to speech proof of concept and Dialogflow fulfillment code and 
 ### Engineering Addendum
 
 #### Hardware
+For our two main sensors, the scale and temperature sensor, we decided to go with an Arduino Uno and an Arduino Micro for ease of use and fast prototyping.  We had positive results with both of these boards and would recommend continued use of them, however, it is possible to also build PCB's or use another board if desired.  However, all of our hardware code is for Arduino's and the schematics and all other information in the README_HARDWARE.md assume you are using the same hardware as we are, including Arduino's.
+
+For the scale we ended up using a torque based load cell to measure the weight which was both cheap and reliable.  With it we were able to measure all of our desired weights and made it precise to the nearest gram.  However, there are many other options out there, both more expensive, larger, smaller, etc. But we found the torque based load cell worked well for our purposes.
+
+For the temperature sensor we went with a K-type thermocouple with a stainless steel tip and glass braid threading.  Similar to the load cell it met all of our requirements of being food safe, heat resistance well over 300 Celsius, thin so as to thread inside an oven door, and cheep.  Once again, this was the best option that was also cheap that we found, however, there are many different temperature sensors out there, both cheaper and more expensive.  We found many of the cheaper ones did not do well at super high temperatures, and so would at least recommend a thermocouple, if not the exact one we used.  We also decided to have only the temperature sensor go into the oven, so that the hardware components did not need to be heat resistant, which removed a lot of our issues.  So if you are following our work, make sure your sensor wire is thin enough to not block an oven door from shutting.
+
+As we were unable to attain buttons before the Coronavirus hit the code inside the Final_scale_demo assumes the scale is connected to a computer with an Arduino Serial monitor open in which the inputs act as button presses.
 
 #### Software 
 The Software module of this project is still in the midst of completing as the semester was cut short due to the COVID-19 pandemic. 
 
 We broke up our software component into two categories: Backend and Frontend. Doing so would make it easier to split up work. The Frontend of the Mobile Application was utilized using Sketch while the Backend uses Android Studio. Please see README_SOFTWARE.md for more information on which tools are used for development.
 
-The Login page is only able to use Google Accounts because of the connectivity to Google Firebase. Upon successful user authentication, users will be greeted with “Hello (Name).” This means that their data is now on the Firebase storage and their favorite recipes and dishes that they wish to make or decide to edit will now be stored. Following the Login page is the Recipes page which includes recipes based upon different categories and diets. Our main intentions for the Recipes page was to integrate the MealDB folder. Currently we are working on including time and ingredients for the recipe in order for users to add their own spin.
+The Login page is only able to use Google Accounts because of the connectivity to Google Firebase. Upon successful user authentication, users will be greeted with “Hello (Name).” This means that they are successfully logged into the Firebase database and that they can now access their favorite recipes and dishes that they wish to make and have all of their data saved. Following the Login page is the Recipes page which includes recipes based upon different categories and diets. Our main intentions for the Recipes page was to integrate the MealDB folder. Currently we are working on including time and ingredients for the recipe in order for users to add their own spin.
 
 Once a user selects their recipe, they will be prompted to a page that will include the necessary ingredients and nutritional value followed by a start button below. This will then bring them to the scale bar which will display the instructions with NEXT and PREVIOUS buttons. Heading over to the User Profile Page, you will have the log out function as well as the ability to see the user’s data.
 
-In terms of connectivity to the Arduino, data is sent from the Arduino via bluetooth. This will be displayed on the Scale page. For more information, please reference to README_SOFTWARE.md
+In terms of connectivity to the Arduino, data is sent from the Arduino via bluetooth. This will be displayed on the relevant page and upon completion of a recipe this data is stored in the Firebase Database. For more information, please reference to README_SOFTWARE.md
+
+Although the app is set up to differentiate between temperature and scale data, we were unable to receive a second HC-05 bluetooth module before the Coronavirus hit and so were never able to test if the bluetooth service would connect to two devices.  I believe that it would not and that you would need to start two background bluetooth services, one to connect to the scale and another to connect to the temperature sensor.  Or you could combine the temperature sensor and scale to use one Arduino.  There is currently a barebones arduino code for the purpose in the Arduino Test Code folder, but that removes the moveability of the scale and temperature sensor.
+
+Also make sure that you get the MAC address or name of your bluetooth device and put that into the bluetooth service code in the Android app, otherwise the app will not connect to your device.
 
 
 #### Natural Language Understanding
