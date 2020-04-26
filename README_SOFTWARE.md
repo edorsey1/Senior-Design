@@ -84,8 +84,6 @@ And then double click signingReport.  At this point some stuff should run in the
 
 Then connect your android device or create a virtual device and build and run the application using the green arrow near the top middle of Android Studio, amking sure your desired device is selected in the box to the left of the arrow.
 
-An error may occur, 
-
 ## Natural Language Understanding
 #### Repository Overview
 All code involved in developing the Natural Language Understanding (NLU) module can be found in the Voice folder of the repository. The folder DFdemo/DBupload contains the code to initialize and run the code that connects the Dialogflow API to the Google Firestore Cloudstore database. Upload.js provides the fulfillment functions for each individual intent. This is the only code in the DFdemo/DBupload folder that was used for the final version of the project. The other files in this folder are for testing and initializing a basic javascript project or alternative ways to initialize the database. In the Voice folder, all other files and folders are for a proof of concept for an Android app that performs text-to-speech. This code was not used in the final project but could be useful for the continuation of the project. For the purpose of this report, I am only going to focus on the code in the DFdemo/DBupload folder, because this is the code that is currently used in the project. A discussion of how the rest of the Voice code could be used is in the Engineering Addendum. 
