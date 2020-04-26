@@ -6,6 +6,8 @@ Arduino Test Code - All Arduino code.  Calibration code for the scale is titled:
 
 Bluetooth - Android Studio project containing the final Code for our application, includidng a blutooth connection to our hardware components.
 
+Images - Schematics and pictures of hardware components
+
 MealDB - Code for database of recipes for use in app with categories, recipes, instructions etc.
 
 Reports - Contains copies of all written reports and testing for the Fall and Spring semesters
