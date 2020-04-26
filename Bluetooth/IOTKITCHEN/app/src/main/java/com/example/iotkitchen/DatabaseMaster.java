@@ -15,6 +15,7 @@ import com.google.firebase.firestore.SetOptions;
 
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;;
@@ -92,7 +93,8 @@ public class DatabaseMaster {
     //When the recipe is finished, saves the cooking session data in the database
     public void SaveData(RecipeData data) {
         //ArrayList<Integer> temp = data.getTemp();
-        userRef.collection("CookingSessions").document("1")
+        String name = Calendar.getInstance().getTime().toString();
+        userRef.collection("CookingSessions").document(name)
                 .set(data, SetOptions.merge());
     }
 }
