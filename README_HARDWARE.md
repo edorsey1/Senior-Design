@@ -16,8 +16,9 @@ The below table also does not take into account wires, breadboard, buttons, or o
 
 
 #### Circuit Schematic and Assembled Circuit
-[Scale Circuit Schematic](Scale_Circuit_Schematic.pdf)
+The circuit schematic can be found in pdf format here: [Scale Circuit Schematic](Scale_Circuit_Schematic.pdf)
+
  * Image of the scale from a top down view
 ![](Scale_top.jpg)
  * Image of the scale from a side view to see the load cell
-![](Scale_side.pdf)
+![](Scale_side.jpg)
