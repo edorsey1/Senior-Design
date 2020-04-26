@@ -26,10 +26,13 @@ The circuit schematic can be found in pdf format here: [Scale Circuit Schematic]
 
 #### Code/How to run
 All Arduino code was written and compiled using:
-         Arduino 1.8.12
+
+    Arduino 1.8.12
+
 There are numerous Arduino scale codes in the folder Arduion_Test_Code, but only two are of importance and those are:
 
 * Scale_Calibration - Calibration script needed to find the proper calibration factor for the scale.  The process is as follows:
+
     1. Setup the scale, run the Scale_Calibration code with the calibration_factor set to 1 on the Arduino and with 0 weight on the scale. Open the Serial monitor for the Arduino.
     2. Record the measurement with 0 weight on the scale (should be displayed in the serial monitor and should be 0)
     3. Place a known weight on the scale and record the measurement.
@@ -37,6 +40,7 @@ There are numerous Arduino scale codes in the folder Arduion_Test_Code, but only
     5. Finally replace the calibration factor in the all future scale code with this value.  You can also test and fine tune further using the Scale_Calibration code and using the + and - keys to modify the calibration factor.
 
 * Final_scale_demo - Main script for the Scale with no buttons.  The scale must currently be attached to a laptop with Arduino installed and the Serial monitor open.  Then to tare the scale input the key "t" into the serial monitor and press enter.  Similarly, to send data to the app input a "q" into the serial monitor.  If the script gives an error saying that it is missing libraries follow the following steps:
+
     1. In the Arduino environment go to: tools -> Manage Libraries
     2. Search for HX711
     3. Install the library titled "HX711 Arduino Library"
@@ -49,6 +53,8 @@ There are numerous Arduino scale codes in the folder Arduion_Test_Code, but only
 
 #### Other
 Due to having no buttons the current scale setup is reliant on being attached to a computer for taring and sending data functionality.  However, if this were not the case, the Arduino from the scale could be plugged directly into a wall outlet as long as only 7-12V are applied.
+
+
 
 ## Temperature Sensor
 #### Bill of Materials
@@ -75,10 +81,13 @@ The circuit schematic can be found in pdf format here: [Temperature Sensor Circu
 
 #### Code/How to run
 All Arduino code was written and compiled using:
-         Arduino 1.8.12
+
+    Arduino 1.8.12
+    
 There are a couple Arduino temperature sensor codes in the folder Arduion_Test_Code, but only one of them is of importance:
 
 * Temp_Micro - Main script for the temperature sensor.  The arduino micro must have the code on it and then the device can be plugged directly into a wall outlet.  Once plugged in the LCD will display the currently measured temperature at the tip of the stainless steel thermocouple cap.  Currently, the script has it so that data is transmitted at a rate of 1 Hz and only once the temperature measured increases above 20 Celsius.  This can be changed by modifying the delay at the end of the script or the line "if (temp > 20).  For first use some libraries are required and can be installed by:
+
     1. In the Arduino environment go to: tools -> Manage Libraries
     2. Search for MAX31856
     3. Install the library titled "Adafruit MAX31856 library"
