@@ -1,6 +1,8 @@
 # IoT_Kitchen
 Senior Design Project Team 21
 
+[Link to Demo Video](https://youtu.be/7nlepJa6-5U)
+
 ### Repository Directory
 Arduino Test Code - All Arduino code.  Calibration code for the scale is titled: Scale_Calibration.  Most recent test code and that used in the final demo is: Final_scale_demo for the scale and: Temp_Micro for the temperature sensor.  Although code, it is more closely related to hardware and thus discussed further in the README_HARDWARE.md.
 
